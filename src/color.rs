@@ -1,7 +1,8 @@
 mod presets;
 
 /// Representation of a color stored as RGB channels.
-/// Each channel is stored as u8 (0-255)
+///
+/// Each channel is stored as `u8` (0-255)
 #[derive(Debug)]
 pub struct Color {
     red: u8,
@@ -10,6 +11,9 @@ pub struct Color {
 }
 
 impl Color {
+    /// Creates `Color` from the given values.
+    ///
+    /// `r`: red, `g`: green, `b`: blue
     pub fn from_rgb(r: u8, g: u8, b: u8) -> Color {
         Color {
             red: r,
@@ -18,6 +22,11 @@ impl Color {
         }
     }
 
+    /// Creates `Color` from the given hex string.
+    ///
+    /// Accepts strings only with the following formats and length:
+    /// - `f0f0f0` (`rrggbb`)
+    /// - `fff` (`rgb`)
     pub fn from_hex(hex: &str) -> Color {
         let length = hex.chars().count();
         if length == 6 {
