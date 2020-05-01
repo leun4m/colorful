@@ -50,12 +50,24 @@ impl Color {
         (self.red, self.green, self.blue)
     }
 
-    /// Converts `Color` to a HEX String
+    /// Converts `Color` to a `HEX` String (6 digits)
     ///
     /// e.g. white => `"ffffff"`
     pub fn to_hex(&self) -> String {
         let sum: u32 = ((self.red as u32) << 16) + ((self.green as u32) << 8) + (self.blue as u32);
         format!("{:06x}", sum)
+    }
+
+    /// Converts `Color` to a 3 digit `HEX` String
+    ///
+    /// e.g. white => `"fff"`
+    ///
+    /// **Warning:** This is a *lossy* compression.
+    /// It will basically omit any second value:
+    /// `"a0c4ed"` => `"ace"`
+    pub fn to_hex_3(&self) -> String {
+        let sum: u32 = ((self.red as u32) << 4) + ((self.green as u32) << 2) + (self.blue as u32);
+        format!("{:03x}", sum)
     }
 
     fn from_any_hex(hex: &str, base: u32) -> Color {
@@ -167,6 +179,31 @@ mod tests {
             assert_eq!("ff0000", presets::RED.to_hex());
             assert_eq!("00ff00", presets::GREEN.to_hex());
             assert_eq!("0000ff", presets::BLUE.to_hex());
+        }
+
+        #[test]
+        fn h3_custom() {
+            assert_eq!("ff3399", Color::from_hex("f39").to_hex());
+            assert_eq!("225511", Color::from_hex("251").to_hex());
+            assert_eq!("aa3322", Color::from_hex("a32").to_hex());
+        }
+    }
+
+    mod to_hex_3 {
+        use super::*;
+
+        fn presets() {
+            assert_eq!("fff", presets::WHITE.to_hex_3());
+            assert_eq!("000", presets::BLACK.to_hex_3());
+            assert_eq!("f00", presets::RED.to_hex_3());
+            assert_eq!("0f0", presets::GREEN.to_hex_3());
+            assert_eq!("00f", presets::BLUE.to_hex_3());
+        }
+
+        fn custom() {
+            assert_eq!("fff", Color::from_hex("f0f0f0").to_hex_3());
+            assert_eq!("123", Color::from_hex("102030").to_hex_3());
+            assert_eq!("ace", Color::from_hex("a0c4ed").to_hex_3());
         }
     }
 }
