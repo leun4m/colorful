@@ -50,6 +50,14 @@ impl Color {
         (self.red, self.green, self.blue)
     }
 
+    /// Converts `Color` to a HEX String
+    ///
+    /// e.g. white => `"ffffff"`
+    pub fn to_hex(&self) -> String {
+        let sum: u32 = ((self.red as u32) << 16) + ((self.green as u32) << 8) + (self.blue as u32);
+        format!("{:06x}", sum)
+    }
+
     fn from_any_hex(hex: &str, base: u32) -> Color {
         let factor = 255 / (base - 1);
         let bit_move = (base as f64).log2() as u32;
@@ -146,6 +154,19 @@ mod tests {
             assert_eq!((2, 20, 200), Color::from_rgb(2, 20, 200).to_rgb_tuple());
             assert_eq!((42, 13, 5), Color::from_rgb(42, 13, 5).to_rgb_tuple());
             assert_eq!((80, 252, 1), Color::from_rgb(80, 252, 1).to_rgb_tuple());
+        }
+    }
+
+    mod to_hex {
+        use super::*;
+
+        #[test]
+        fn presets() {
+            assert_eq!("ffffff", presets::WHITE.to_hex());
+            assert_eq!("000000", presets::BLACK.to_hex());
+            assert_eq!("ff0000", presets::RED.to_hex());
+            assert_eq!("00ff00", presets::GREEN.to_hex());
+            assert_eq!("0000ff", presets::BLUE.to_hex());
         }
     }
 }
