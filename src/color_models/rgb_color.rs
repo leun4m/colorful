@@ -1,5 +1,6 @@
 use crate::color_models::hsv_color::HSVColor;
 use crate::color_models::utils;
+use std::fmt::{Display, Formatter, Result};
 
 /// Contains predefined colors
 pub mod presets;
@@ -23,16 +24,8 @@ impl RGBColor {
     /// - `r`: red
     /// - `g`: green    
     /// - `b`: blue
-    pub fn from_rgb(r: u8, g: u8, b: u8) -> RGBColor {
+    pub fn from_rgb(r: u8, g: u8, b: u8) -> Self {
         RGBColor { r, g, b }
-    }
-
-    /// Creates a new `RGBColor` from the given tuple.
-    ///
-    /// # Arguments
-    /// - (r, g, b): tuple containing (red, green, blue)
-    pub fn from_tuple(rgb: (u8, u8, u8)) -> RGBColor {
-        RGBColor::from_rgb(rgb.0, rgb.1, rgb.2)
     }
 
     /// Creates a new `RGBColor` from the given floating point values.
@@ -46,7 +39,7 @@ impl RGBColor {
     /// Expects values from 0.0 to 1.0 (both inclusive)
     /// - Any values > 1 will be treated as 1
     /// - Any values < 0 it will be treated as 0
-    pub fn from_rgb_f64(r: f64, g: f64, b: f64) -> RGBColor {
+    pub fn from_rgb_f64(r: f64, g: f64, b: f64) -> Self {
         RGBColor::from_rgb(
             utils::save_convert_float_to_byte(r),
             utils::save_convert_float_to_byte(g),
@@ -67,7 +60,7 @@ impl RGBColor {
     /// `0123456789abcdef`
     ///
     /// It will `panic` otherwise!
-    pub fn from_hex(hex: &str) -> RGBColor {
+    pub fn from_hex(hex: &str) -> Self {
         let length = hex.chars().count();
         let value =
             u32::from_str_radix(hex, 16).expect(format!("HEX is invalid: {}", hex).as_str());
@@ -171,6 +164,30 @@ impl RGBColor {
     }
 }
 
+impl From<(u8, u8, u8)> for RGBColor {
+    /// Creates a new `RGBColor` from the given tuple.
+    ///
+    /// Works similar to [from_rgb](#method.from_rgb)
+    fn from(rgb: (u8, u8, u8)) -> Self {
+        RGBColor::from_rgb(rgb.0, rgb.1, rgb.2)
+    }
+}
+
+impl From<(f64, f64, f64)> for RGBColor {
+    /// Creates a new `RGBColor` from the given tuple of floating point values
+    ///
+    /// Works similar to [from_rgb_f64](#method.from_rgb_f64)
+    fn from(rgb: (f64, f64, f64)) -> Self {
+        RGBColor::from_rgb_f64(rgb.0, rgb.1, rgb.2)
+    }
+}
+
+impl Display for RGBColor {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
+        write!(f, "(R:{}, G:{}, B:{})", self.r, self.g, self.b)
+    }
+}
+
 impl PartialEq for RGBColor {
     fn eq(&self, other: &Self) -> bool {
         self.r == other.r && self.g == other.g && self.b == other.b
@@ -256,10 +273,10 @@ mod tests {
 
         #[test]
         fn custom() {
-            assert_eq!(RGBColor::from_rgb(1, 2, 3), RGBColor::from_tuple((1, 2, 3)));
+            assert_eq!(RGBColor::from_rgb(1, 2, 3), RGBColor::from((1, 2, 3)));
             assert_eq!(
                 RGBColor::from_rgb(255, 0, 127),
-                RGBColor::from_tuple((255, 0, 127))
+                RGBColor::from((255, 0, 127))
             );
         }
     }
