@@ -21,21 +21,27 @@ impl Color {
     pub fn from_hex(hex: &str) -> Color {
         let length = hex.chars().count();
         if length == 6 {
-            let r = &hex[0..2];
-            let g = &hex[2..4];
-            let b = &hex[4..6];
-            Color::from_rgb(
-                Color::convert_u8_hex(r),
-                Color::convert_u8_hex(g),
-                Color::convert_u8_hex(b),
-            )
+            Color::from_any_hex(hex, 16 * 16)
+        } else if length == 3 {
+            Color::from_any_hex(hex, 16)
         } else {
             panic!("HEX number has invalid length: {}", length);
         }
     }
 
-    fn convert_u8_hex(hex: &str) -> u8 {
-        u8::from_str_radix(hex, 16).expect(format!("HEX no valid u8: {}", hex).as_str())
+    fn from_any_hex(hex: &str, base: u32) -> Color {
+        let factor = 255 / (base - 1);
+        let bit_move = (base as f64).log2() as u32;
+        let mut value =
+            u32::from_str_radix(hex, 16).expect(format!("HEX is invalid: {}", hex).as_str());
+
+        let b = ((value % base) * factor) as u8;
+        value >>= bit_move;
+        let g = ((value % base) * factor) as u8;
+        value >>= bit_move;
+        let r = ((value % base) * factor) as u8;
+
+        Color::from_rgb(r, g, b)
     }
 }
 
@@ -50,11 +56,20 @@ mod tests {
     use crate::color::{presets, Color};
 
     #[test]
-    fn hex_presets() {
+    fn hex_6_presets() {
         assert_eq!(presets::WHITE, Color::from_hex("ffffff"));
         assert_eq!(presets::BLACK, Color::from_hex("000000"));
         assert_eq!(presets::RED, Color::from_hex("ff0000"));
         assert_eq!(presets::GREEN, Color::from_hex("00ff00"));
         assert_eq!(presets::BLUE, Color::from_hex("0000ff"));
+    }
+
+    #[test]
+    fn hex_3_presets() {
+        assert_eq!(presets::WHITE, Color::from_hex("fff"));
+        assert_eq!(presets::BLACK, Color::from_hex("000"));
+        assert_eq!(presets::RED, Color::from_hex("f00"));
+        assert_eq!(presets::GREEN, Color::from_hex("0f0"));
+        assert_eq!(presets::BLUE, Color::from_hex("00f"));
     }
 }
