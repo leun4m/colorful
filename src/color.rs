@@ -53,44 +53,48 @@ impl PartialEq for Color {
 
 #[cfg(test)]
 mod tests {
-    use crate::color::{presets, Color};
+    use super::*;
 
-    #[test]
-    fn from_hex__6_presets() {
-        assert_eq!(presets::WHITE, Color::from_hex("ffffff"));
-        assert_eq!(presets::BLACK, Color::from_hex("000000"));
-        assert_eq!(presets::RED, Color::from_hex("ff0000"));
-        assert_eq!(presets::GREEN, Color::from_hex("00ff00"));
-        assert_eq!(presets::BLUE, Color::from_hex("0000ff"));
-    }
+    mod from_hex {
+        use super::*;
 
-    #[test]
-    fn from_hex__6_custom() {
-        assert_eq!(Color::from_rgb(166, 65, 21), Color::from_hex("A64115"));
-        assert_eq!(Color::from_rgb(21, 166, 65), Color::from_hex("15A641"));
-        assert_eq!(Color::from_rgb(65, 21, 166), Color::from_hex("4115A6"));
-    }
+        #[test]
+        fn h6_presets() {
+            assert_eq!(presets::WHITE, Color::from_hex("ffffff"));
+            assert_eq!(presets::BLACK, Color::from_hex("000000"));
+            assert_eq!(presets::RED, Color::from_hex("ff0000"));
+            assert_eq!(presets::GREEN, Color::from_hex("00ff00"));
+            assert_eq!(presets::BLUE, Color::from_hex("0000ff"));
+        }
 
-    #[test]
-    fn from_hex__3_presets() {
-        assert_eq!(presets::WHITE, Color::from_hex("fff"));
-        assert_eq!(presets::BLACK, Color::from_hex("000"));
-        assert_eq!(presets::RED, Color::from_hex("f00"));
-        assert_eq!(presets::GREEN, Color::from_hex("0f0"));
-        assert_eq!(presets::BLUE, Color::from_hex("00f"));
-    }
+        #[test]
+        fn h6_custom() {
+            assert_eq!(Color::from_rgb(166, 65, 21), Color::from_hex("A64115"));
+            assert_eq!(Color::from_rgb(21, 166, 65), Color::from_hex("15A641"));
+            assert_eq!(Color::from_rgb(65, 21, 166), Color::from_hex("4115A6"));
+        }
 
-    #[test]
-    fn from_hex__3_custom() {
-        assert_eq!(Color::from_rgb(255, 51, 153), Color::from_hex("f39"));
-        assert_eq!(Color::from_rgb(153, 255, 51), Color::from_hex("9f3"));
-        assert_eq!(Color::from_rgb(51, 153, 255), Color::from_hex("39f"));
-    }
+        #[test]
+        fn h3_presets() {
+            assert_eq!(presets::WHITE, Color::from_hex("fff"));
+            assert_eq!(presets::BLACK, Color::from_hex("000"));
+            assert_eq!(presets::RED, Color::from_hex("f00"));
+            assert_eq!(presets::GREEN, Color::from_hex("0f0"));
+            assert_eq!(presets::BLUE, Color::from_hex("00f"));
+        }
 
-    #[test]
-    fn from_hex__3_gray() {
-        assert_eq!(Color::from_rgb(17, 17, 17), Color::from_hex("111"));
-        assert_eq!(Color::from_rgb(34, 34, 34), Color::from_hex("222"));
-        assert_eq!(Color::from_rgb(51, 51, 51), Color::from_hex("333"));
+        #[test]
+        fn h3_custom() {
+            assert_eq!(Color::from_rgb(255, 51, 153), Color::from_hex("f39"));
+            assert_eq!(Color::from_rgb(153, 255, 51), Color::from_hex("9f3"));
+            assert_eq!(Color::from_rgb(51, 153, 255), Color::from_hex("39f"));
+        }
+
+        #[test]
+        fn h3_gray() {
+            assert_eq!(Color::from_rgb(17, 17, 17), Color::from_hex("111"));
+            assert_eq!(Color::from_rgb(34, 34, 34), Color::from_hex("222"));
+            assert_eq!(Color::from_rgb(51, 51, 51), Color::from_hex("333"));
+        }
     }
 }
