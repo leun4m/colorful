@@ -11,11 +11,34 @@ pub struct Color {
 }
 
 impl Color {
-    /// Creates `Color` from the given values.
+    /// Creates `Color` from the given integer values.
     ///
     /// `r`: red, `g`: green, `b`: blue
     pub fn from_rgb(r: u8, g: u8, b: u8) -> Color {
         Color { r, g, b }
+    }
+
+    /// Creates `Color` from the given decimal values.
+    ///
+    /// Expects values from 0.0 to 1.0 (both inclusive)
+    /// - If a value > 1 it will be treated as 1
+    /// - If a value < 0 it will be treated as 0
+    pub fn from_rgb_float(r: f64, g: f64, b: f64) -> Color {
+        Color {
+            r: Color::save_convert_float_to_byte(r),
+            g: Color::save_convert_float_to_byte(g),
+            b: Color::save_convert_float_to_byte(b),
+        }
+    }
+
+    fn save_convert_float_to_byte(float: f64) -> u8 {
+        if float >= 1.0 {
+            255
+        } else if float < 0.0 {
+            0
+        } else {
+            (float * 255.0) as u8
+        }
     }
 
     /// Creates `Color` from the given tuple.
@@ -160,6 +183,28 @@ mod tests {
                 Color::from_rgb(255, 0, 127),
                 Color::from_rgb_tuple((255, 0, 127))
             );
+        }
+    }
+
+    mod from_rgb_float {
+        use super::*;
+
+        #[test]
+        fn custom() {
+            assert_eq!("ffffff", Color::from_rgb_float(1.0, 1.0, 1.0).to_hex());
+            assert_eq!("000000", Color::from_rgb_float(0.0, 0.0, 0.0).to_hex());
+            assert_eq!("7f7f7f", Color::from_rgb_float(0.5, 0.5, 0.5).to_hex());
+            assert_eq!("333333", Color::from_rgb_float(0.2, 0.2, 0.2).to_hex());
+        }
+
+        #[test]
+        fn more_than_one() {
+            assert_eq!("ff0000", Color::from_rgb_float(2.0, 0.0, 0.0).to_hex());
+        }
+
+        #[test]
+        fn less_than_zero() {
+            assert_eq!("0000cc", Color::from_rgb_float(-0.5, -3.0, 0.8).to_hex());
         }
     }
 
