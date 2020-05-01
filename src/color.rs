@@ -115,10 +115,13 @@ impl Color {
     /// e.g. white => `"fff"`
     ///
     /// **Warning:** This is a *lossy* compression.
-    /// It will basically omit any second value:
-    /// `"a0c4ed"` => `"ace"`
+    /// It will round to the nearest value
     pub fn to_hex_3(&self) -> String {
-        let sum: u32 = ((self.r as u32) << 4) + ((self.g as u32) << 2) + (self.b as u32);
+        let r = (self.r as f64 / BASE as f64 * 15 as f64).round() as u32;
+        let g = (self.g as f64 / BASE as f64 * 15 as f64).round() as u32;
+        let b = (self.b as f64 / BASE as f64 * 15 as f64).round() as u32;
+
+        let sum: u32 = (r << 8) + (g << 4) + b;
         format!("{:03x}", sum)
     }
 
@@ -266,6 +269,7 @@ mod tests {
     mod to_hex_3 {
         use super::*;
 
+        #[test]
         fn presets() {
             assert_eq!("fff", presets::WHITE.to_hex_3());
             assert_eq!("000", presets::BLACK.to_hex_3());
@@ -274,22 +278,31 @@ mod tests {
             assert_eq!("00f", presets::BLUE.to_hex_3());
         }
 
+        #[test]
         fn custom() {
-            assert_eq!("fff", Color::from_hex("f0f0f0").to_hex_3());
+            assert_eq!("eee", Color::from_hex("f0f0f0").to_hex_3());
             assert_eq!("123", Color::from_hex("102030").to_hex_3());
-            assert_eq!("ace", Color::from_hex("a0c4ed").to_hex_3());
+            assert_eq!("9ce", Color::from_hex("a0c4ed").to_hex_3());
         }
     }
 
     mod to_hsv {
         use super::*;
 
+        #[test]
         fn presets() {
             assert_eq!((0, 0, 255), presets::WHITE.to_hsv());
             assert_eq!((0, 0, 0), presets::BLACK.to_hsv());
             assert_eq!((0, 255, 255), presets::RED.to_hsv());
             assert_eq!((85, 255, 255), presets::GREEN.to_hsv());
             assert_eq!((170, 255, 255), presets::BLUE.to_hsv());
+        }
+
+        #[test]
+        fn custom() {
+            assert_eq!((85, 51, 51), Color::from_hex("293D29").to_hsv());
+
+            assert_eq!((60, 100, 70), Color::from_hex("b3b300").to_hsv());
         }
     }
 }
