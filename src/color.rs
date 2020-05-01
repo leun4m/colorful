@@ -1,4 +1,5 @@
 pub mod presets;
+mod utils;
 
 /// Representation of a color stored as RGB channels.
 ///
@@ -9,6 +10,8 @@ pub struct Color {
     g: u8,
     b: u8,
 }
+
+const BASE: u32 = 255;
 
 impl Color {
     /// Creates `Color` from the given integer values.
@@ -25,19 +28,9 @@ impl Color {
     /// - If a value < 0 it will be treated as 0
     pub fn from_rgb_float(r: f64, g: f64, b: f64) -> Color {
         Color {
-            r: Color::save_convert_float_to_byte(r),
-            g: Color::save_convert_float_to_byte(g),
-            b: Color::save_convert_float_to_byte(b),
-        }
-    }
-
-    fn save_convert_float_to_byte(float: f64) -> u8 {
-        if float >= 1.0 {
-            255
-        } else if float < 0.0 {
-            0
-        } else {
-            (float * 255.0) as u8
+            r: utils::save_convert_float_to_byte(r),
+            g: utils::save_convert_float_to_byte(g),
+            b: utils::save_convert_float_to_byte(b),
         }
     }
 
@@ -82,6 +75,31 @@ impl Color {
     /// Converts `Color` to a RGB Tuple
     pub fn to_rgb_tuple(&self) -> (u8, u8, u8) {
         (self.r, self.g, self.b)
+    }
+
+    /// Converts `Color` to a HSV Tuple
+    pub fn to_hsv(&self) -> (u8, u8, u8) {
+        let r = utils::as_float(self.r);
+        let g = utils::as_float(self.g);
+        let b = utils::as_float(self.b);
+        let c_max = utils::get_max(r, g, b);
+        let c_min = utils::get_min(r, g, b);
+        let delta = c_max - c_min;
+
+        let hue = if delta == 0.0 {
+            0.0
+        } else if r >= b && r >= g {
+            (g - b) / delta
+        } else if g >= r && g >= b {
+            (b - g) / delta + 2.0
+        } else {
+            (r - g) / delta + 4.0
+        };
+
+        let value = c_max * (BASE as f64);
+        let saturation = if value == 0.0 { 0.0 } else { delta / value };
+
+        utils::as_byte_tuple((hue, saturation, value))
     }
 
     /// Converts `Color` to a `HEX` String (6 digits)
@@ -260,6 +278,18 @@ mod tests {
             assert_eq!("fff", Color::from_hex("f0f0f0").to_hex_3());
             assert_eq!("123", Color::from_hex("102030").to_hex_3());
             assert_eq!("ace", Color::from_hex("a0c4ed").to_hex_3());
+        }
+    }
+
+    mod to_hsv {
+        use super::*;
+
+        fn presets() {
+            assert_eq!((0, 0, 255), presets::WHITE.to_hsv());
+            assert_eq!((0, 0, 0), presets::BLACK.to_hsv());
+            assert_eq!((0, 255, 255), presets::RED.to_hsv());
+            assert_eq!((85, 255, 255), presets::GREEN.to_hsv());
+            assert_eq!((170, 255, 255), presets::BLUE.to_hsv());
         }
     }
 }
