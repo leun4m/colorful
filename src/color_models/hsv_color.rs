@@ -1,4 +1,4 @@
-/// Representation of a color stored as HSV channels.
+/// Representation of a color_models stored as HSV channels.
 ///
 /// Each channel is stored as `f64`
 /// h in degrees (0 - 360)

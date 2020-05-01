@@ -1,9 +1,10 @@
-use crate::color::hsv_color::HSVColor;
-use crate::color::utils;
+use crate::color_models::hsv_color::HSVColor;
+use crate::color_models::utils;
 
+/// Contains predefined colors
 pub mod presets;
 
-/// Representation of a color stored as RGB channels.
+/// Representation of a color_models stored as RGB channels.
 ///
 /// Each channel is stored as `u8` (0-255)
 #[derive(Debug)]
@@ -16,66 +17,87 @@ pub struct RGBColor {
 pub const BASE: u32 = 255;
 
 impl RGBColor {
-    /// Creates `RGBColor` from the given integer values.
+    /// Creates a new `RGBColor` from the given integer values.
     ///
-    /// `r`: red, `g`: green, `b`: blue
+    /// # Arguments
+    /// - `r`: red
+    /// - `g`: green    
+    /// - `b`: blue
     pub fn from_rgb(r: u8, g: u8, b: u8) -> RGBColor {
         RGBColor { r, g, b }
     }
 
-    /// Creates `RGBColor` from the given decimal values.
+    /// Creates a new `RGBColor` from the given tuple.
     ///
+    /// # Arguments
+    /// - (r, g, b): tuple containing (red, green, blue)
+    pub fn from_tuple(rgb: (u8, u8, u8)) -> RGBColor {
+        RGBColor::from_rgb(rgb.0, rgb.1, rgb.2)
+    }
+
+    /// Creates a new `RGBColor` from the given floating point values.
+    ///
+    /// # Arguments
+    /// - `r`: red
+    /// - `g`: green
+    /// - `b`: blue
+    ///
+    /// # Please note
     /// Expects values from 0.0 to 1.0 (both inclusive)
-    /// - If a value > 1 it will be treated as 1
-    /// - If a value < 0 it will be treated as 0
-    pub fn from_rgb_float(r: f64, g: f64, b: f64) -> RGBColor {
-        RGBColor {
-            r: utils::save_convert_float_to_byte(r),
-            g: utils::save_convert_float_to_byte(g),
-            b: utils::save_convert_float_to_byte(b),
-        }
+    /// - Any values > 1 will be treated as 1
+    /// - Any values < 0 it will be treated as 0
+    pub fn from_rgb_f64(r: f64, g: f64, b: f64) -> RGBColor {
+        RGBColor::from_rgb(
+            utils::save_convert_float_to_byte(r),
+            utils::save_convert_float_to_byte(g),
+            utils::save_convert_float_to_byte(b),
+        )
     }
 
-    /// Creates `RGBColor` from the given tuple.
+    /// Creates a new `RGBColor` from the given hex string.
     ///
-    /// (r, g, b)
-    pub fn from_rgb_tuple(tuple: (u8, u8, u8)) -> RGBColor {
-        RGBColor::from_rgb(tuple.0, tuple.1, tuple.2)
-    }
-
-    /// Creates `RGBColor` from the given hex string.
+    /// # Arguments
+    /// - `hex`: the hexadecimal string to be converted
     ///
-    /// Accepts strings only with the following formats and length:
-    /// - `f0f0f0` (`rrggbb`)
-    /// - `fff` (`rgb`)
+    /// # Please note
+    /// 1. Accepts strings only with the following format and length:
+    ///     - `aabbcc` (`rrggbb`)
+    ///     - `abc` (`rgb`)
+    /// 2. Make sure the Hex contains only valid (hexademical) digits:
+    /// `0123456789abcdef`
+    ///
+    /// It will `panic` otherwise!
     pub fn from_hex(hex: &str) -> RGBColor {
         let length = hex.chars().count();
+        let value =
+            u32::from_str_radix(hex, 16).expect(format!("HEX is invalid: {}", hex).as_str());
+
         if length == 6 {
-            RGBColor::from_any_hex(hex, 16 * 16)
+            RGBColor::from_int(value, 256)
         } else if length == 3 {
-            RGBColor::from_any_hex(hex, 16)
+            RGBColor::from_int(value, 16)
         } else {
             panic!("HEX number has invalid length: {}", length);
         }
     }
 
     /// Returns the value of channel red
-    pub fn get_red(&self) -> u8 {
+    pub fn red(&self) -> u8 {
         self.r
     }
 
     /// Returns the value of channel green
-    pub fn get_green(&self) -> u8 {
+    pub fn green(&self) -> u8 {
         self.g
     }
 
     /// Returns the value of channel blue
-    pub fn get_blue(&self) -> u8 {
+    pub fn blue(&self) -> u8 {
         self.b
     }
 
     /// Converts `RGBColor` to an RGB Tuple
-    pub fn to_rgb_tuple(&self) -> (u8, u8, u8) {
+    pub fn as_tuple(&self) -> (u8, u8, u8) {
         (self.r, self.g, self.b)
     }
 
@@ -134,11 +156,10 @@ impl RGBColor {
         format!("{:03x}", sum)
     }
 
-    fn from_any_hex(hex: &str, base: u32) -> RGBColor {
-        let factor = 255 / (base - 1);
+    /// Converts an integer to the corresponding RGB Color
+    fn from_int(mut value: u32, base: u32) -> RGBColor {
+        let factor = BASE / (base - 1);
         let bit_move = (base as f64).log2() as u32;
-        let mut value =
-            u32::from_str_radix(hex, 16).expect(format!("HEX is invalid: {}", hex).as_str());
 
         let b = ((value % base) * factor) as u8;
         value >>= bit_move;
@@ -189,6 +210,24 @@ mod tests {
         }
 
         #[test]
+        #[should_panic]
+        fn too_long() {
+            RGBColor::from_hex("abcdefg");
+        }
+
+        #[test]
+        #[should_panic]
+        fn too_short() {
+            RGBColor::from_hex("ab");
+        }
+
+        #[test]
+        #[should_panic]
+        fn weird_chars() {
+            RGBColor::from_hex("axx");
+        }
+
+        #[test]
         fn h3_presets() {
             assert_eq!(presets::WHITE, RGBColor::from_hex("fff"));
             assert_eq!(presets::BLACK, RGBColor::from_hex("000"));
@@ -217,13 +256,10 @@ mod tests {
 
         #[test]
         fn custom() {
-            assert_eq!(
-                RGBColor::from_rgb(1, 2, 3),
-                RGBColor::from_rgb_tuple((1, 2, 3))
-            );
+            assert_eq!(RGBColor::from_rgb(1, 2, 3), RGBColor::from_tuple((1, 2, 3)));
             assert_eq!(
                 RGBColor::from_rgb(255, 0, 127),
-                RGBColor::from_rgb_tuple((255, 0, 127))
+                RGBColor::from_tuple((255, 0, 127))
             );
         }
     }
@@ -233,20 +269,20 @@ mod tests {
 
         #[test]
         fn custom() {
-            assert_eq!("ffffff", RGBColor::from_rgb_float(1.0, 1.0, 1.0).to_hex());
-            assert_eq!("000000", RGBColor::from_rgb_float(0.0, 0.0, 0.0).to_hex());
-            assert_eq!("7f7f7f", RGBColor::from_rgb_float(0.5, 0.5, 0.5).to_hex());
-            assert_eq!("333333", RGBColor::from_rgb_float(0.2, 0.2, 0.2).to_hex());
+            assert_eq!("ffffff", RGBColor::from_rgb_f64(1.0, 1.0, 1.0).to_hex());
+            assert_eq!("000000", RGBColor::from_rgb_f64(0.0, 0.0, 0.0).to_hex());
+            assert_eq!("7f7f7f", RGBColor::from_rgb_f64(0.5, 0.5, 0.5).to_hex());
+            assert_eq!("333333", RGBColor::from_rgb_f64(0.2, 0.2, 0.2).to_hex());
         }
 
         #[test]
         fn more_than_one() {
-            assert_eq!("ff0000", RGBColor::from_rgb_float(2.0, 0.0, 0.0).to_hex());
+            assert_eq!("ff0000", RGBColor::from_rgb_f64(2.0, 0.0, 0.0).to_hex());
         }
 
         #[test]
         fn less_than_zero() {
-            assert_eq!("0000cc", RGBColor::from_rgb_float(-0.5, -3.0, 0.8).to_hex());
+            assert_eq!("0000cc", RGBColor::from_rgb_f64(-0.5, -3.0, 0.8).to_hex());
         }
     }
 
@@ -255,15 +291,15 @@ mod tests {
 
         #[test]
         fn presets() {
-            assert_eq!((255, 255, 255), presets::WHITE.to_rgb_tuple());
-            assert_eq!((0, 0, 0), presets::BLACK.to_rgb_tuple());
+            assert_eq!((255, 255, 255), presets::WHITE.as_tuple());
+            assert_eq!((0, 0, 0), presets::BLACK.as_tuple());
         }
 
         #[test]
         fn custom() {
-            assert_eq!((2, 20, 200), RGBColor::from_rgb(2, 20, 200).to_rgb_tuple());
-            assert_eq!((42, 13, 5), RGBColor::from_rgb(42, 13, 5).to_rgb_tuple());
-            assert_eq!((80, 252, 1), RGBColor::from_rgb(80, 252, 1).to_rgb_tuple());
+            assert_eq!((2, 20, 200), RGBColor::from_rgb(2, 20, 200).as_tuple());
+            assert_eq!((42, 13, 5), RGBColor::from_rgb(42, 13, 5).as_tuple());
+            assert_eq!((80, 252, 1), RGBColor::from_rgb(80, 252, 1).as_tuple());
         }
     }
 
