@@ -5,9 +5,9 @@ pub mod presets;
 /// Each channel is stored as `u8` (0-255)
 #[derive(Debug)]
 pub struct Color {
-    red: u8,
-    green: u8,
-    blue: u8,
+    r: u8,
+    g: u8,
+    b: u8,
 }
 
 impl Color {
@@ -15,11 +15,7 @@ impl Color {
     ///
     /// `r`: red, `g`: green, `b`: blue
     pub fn from_rgb(r: u8, g: u8, b: u8) -> Color {
-        Color {
-            red: r,
-            green: g,
-            blue: b,
-        }
+        Color { r, g, b }
     }
 
     /// Creates `Color` from the given tuple.
@@ -47,29 +43,29 @@ impl Color {
 
     /// Returns the value for channel red
     pub fn get_red(&self) -> u8 {
-        self.red
+        self.r
     }
 
     /// Returns the value for channel green
     pub fn get_green(&self) -> u8 {
-        self.green
+        self.g
     }
 
     /// Returns the value for channel blue
     pub fn get_blue(&self) -> u8 {
-        self.blue
+        self.b
     }
 
     /// Converts `Color` to a RGB Tuple
     pub fn to_rgb_tuple(&self) -> (u8, u8, u8) {
-        (self.red, self.green, self.blue)
+        (self.r, self.g, self.b)
     }
 
     /// Converts `Color` to a `HEX` String (6 digits)
     ///
     /// e.g. white => `"ffffff"`
     pub fn to_hex(&self) -> String {
-        let sum: u32 = ((self.red as u32) << 16) + ((self.green as u32) << 8) + (self.blue as u32);
+        let sum: u32 = ((self.r as u32) << 16) + ((self.g as u32) << 8) + (self.b as u32);
         format!("{:06x}", sum)
     }
 
@@ -81,7 +77,7 @@ impl Color {
     /// It will basically omit any second value:
     /// `"a0c4ed"` => `"ace"`
     pub fn to_hex_3(&self) -> String {
-        let sum: u32 = ((self.red as u32) << 4) + ((self.green as u32) << 2) + (self.blue as u32);
+        let sum: u32 = ((self.r as u32) << 4) + ((self.g as u32) << 2) + (self.b as u32);
         format!("{:03x}", sum)
     }
 
@@ -103,7 +99,7 @@ impl Color {
 
 impl PartialEq for Color {
     fn eq(&self, other: &Self) -> bool {
-        self.red == other.red && self.green == other.green && self.blue == other.blue
+        self.r == other.r && self.g == other.g && self.b == other.b
     }
 }
 
