@@ -1,4 +1,4 @@
-mod presets;
+pub mod presets;
 
 /// Representation of a color stored as RGB channels.
 ///
