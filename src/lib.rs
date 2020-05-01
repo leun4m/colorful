@@ -1,6 +1,4 @@
 mod color;
-mod common_colors;
-
 
 #[cfg(test)]
 mod tests {

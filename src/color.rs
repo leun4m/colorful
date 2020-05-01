@@ -1,3 +1,5 @@
+mod presets;
+
 /// Representation of a color stored as RGB channels.
 /// Each channel is stored as u8 (0-255)
 #[derive(Debug)]
@@ -45,13 +47,11 @@ impl PartialEq for Color {
 
 #[cfg(test)]
 mod tests {
-    use crate::color::Color;
-
-    use crate::common_colors::CommonColors;
+    use crate::color::{presets, Color};
 
     #[test]
     fn hex_white() {
         let color = Color::from_hex("ffffff");
-        assert_eq!(CommonColors::WHITE.as_color(), color);
+        assert_eq!(presets::WHITE, color);
     }
 }
