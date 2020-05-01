@@ -50,8 +50,11 @@ mod tests {
     use crate::color::{presets, Color};
 
     #[test]
-    fn hex_white() {
-        let color = Color::from_hex("ffffff");
-        assert_eq!(presets::WHITE, color);
+    fn hex_presets() {
+        assert_eq!(presets::WHITE, Color::from_hex("ffffff"));
+        assert_eq!(presets::BLACK, Color::from_hex("000000"));
+        assert_eq!(presets::RED, Color::from_hex("ff0000"));
+        assert_eq!(presets::GREEN, Color::from_hex("00ff00"));
+        assert_eq!(presets::BLUE, Color::from_hex("0000ff"));
     }
 }
