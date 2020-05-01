@@ -45,6 +45,21 @@ impl Color {
         }
     }
 
+    /// Returns the value for channel red
+    pub fn get_red(&self) -> u8 {
+        self.red
+    }
+
+    /// Returns the value for channel green
+    pub fn get_green(&self) -> u8 {
+        self.green
+    }
+
+    /// Returns the value for channel blue
+    pub fn get_blue(&self) -> u8 {
+        self.blue
+    }
+
     /// Converts `Color` to a RGB Tuple
     pub fn to_rgb_tuple(&self) -> (u8, u8, u8) {
         (self.red, self.green, self.blue)
