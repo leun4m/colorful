@@ -22,6 +22,13 @@ impl Color {
         }
     }
 
+    /// Creates `Color` from the given tuple.
+    ///
+    /// (r, g, b)
+    pub fn from_rgb_tuple(tuple: (u8, u8, u8)) -> Color {
+        Color::from_rgb(tuple.0, tuple.1, tuple.2)
+    }
+
     /// Creates `Color` from the given hex string.
     ///
     /// Accepts strings only with the following formats and length:
@@ -36,6 +43,11 @@ impl Color {
         } else {
             panic!("HEX number has invalid length: {}", length);
         }
+    }
+
+    /// Converts `Color` to a RGB Tuple
+    pub fn to_rgb_tuple(&self) -> (u8, u8, u8) {
+        (self.red, self.green, self.blue)
     }
 
     fn from_any_hex(hex: &str, base: u32) -> Color {
@@ -104,6 +116,36 @@ mod tests {
             assert_eq!(Color::from_rgb(17, 17, 17), Color::from_hex("111"));
             assert_eq!(Color::from_rgb(34, 34, 34), Color::from_hex("222"));
             assert_eq!(Color::from_rgb(51, 51, 51), Color::from_hex("333"));
+        }
+    }
+
+    mod from_rgb_tuple {
+        use super::*;
+
+        #[test]
+        fn custom() {
+            assert_eq!(Color::from_rgb(1, 2, 3), Color::from_rgb_tuple((1, 2, 3)));
+            assert_eq!(
+                Color::from_rgb(255, 0, 127),
+                Color::from_rgb_tuple((255, 0, 127))
+            );
+        }
+    }
+
+    mod to_rgb_tuple {
+        use super::*;
+
+        #[test]
+        fn presets() {
+            assert_eq!((255, 255, 255), presets::WHITE.to_rgb_tuple());
+            assert_eq!((0, 0, 0), presets::BLACK.to_rgb_tuple());
+        }
+
+        #[test]
+        fn custom() {
+            assert_eq!((2, 20, 200), Color::from_rgb(2, 20, 200).to_rgb_tuple());
+            assert_eq!((42, 13, 5), Color::from_rgb(42, 13, 5).to_rgb_tuple());
+            assert_eq!((80, 252, 1), Color::from_rgb(80, 252, 1).to_rgb_tuple());
         }
     }
 }
