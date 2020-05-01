@@ -78,10 +78,17 @@ impl Color {
     }
 
     /// Converts `Color` to a HSV Tuple
-    pub fn to_hsv(&self) -> (u8, u8, u8) {
+    ///
+    /// The tuple has the usual format:
+    /// (hue, saturation, value)
+    ///
+    /// h in degrees (0 - 360)
+    /// s, v in percent (0 - 1.0)
+    pub fn to_hsv(&self) -> (f64, f64, f64) {
         let r = utils::as_float(self.r);
         let g = utils::as_float(self.g);
         let b = utils::as_float(self.b);
+
         let c_max = utils::get_max(r, g, b);
         let c_min = utils::get_min(r, g, b);
         let delta = c_max - c_min;
@@ -89,17 +96,17 @@ impl Color {
         let hue = if delta == 0.0 {
             0.0
         } else if r >= b && r >= g {
-            (g - b) / delta
+            60.0 * (((g - b) / delta) % 6.0)
         } else if g >= r && g >= b {
-            (b - g) / delta + 2.0
+            60.0 * (((b - r) / delta) + 2.0)
         } else {
-            (r - g) / delta + 4.0
+            60.0 * (((r - g) / delta) + 4.0)
         };
 
-        let value = c_max * (BASE as f64);
-        let saturation = if value == 0.0 { 0.0 } else { delta / value };
+        let saturation = if c_max > 0.0 { delta / c_max } else { 0.0 };
+        let value = c_max;
 
-        utils::as_byte_tuple((hue, saturation, value))
+        (hue, saturation, value)
     }
 
     /// Converts `Color` to a `HEX` String (6 digits)
@@ -291,18 +298,11 @@ mod tests {
 
         #[test]
         fn presets() {
-            assert_eq!((0, 0, 255), presets::WHITE.to_hsv());
-            assert_eq!((0, 0, 0), presets::BLACK.to_hsv());
-            assert_eq!((0, 255, 255), presets::RED.to_hsv());
-            assert_eq!((85, 255, 255), presets::GREEN.to_hsv());
-            assert_eq!((170, 255, 255), presets::BLUE.to_hsv());
-        }
-
-        #[test]
-        fn custom() {
-            assert_eq!((85, 51, 51), Color::from_hex("293D29").to_hsv());
-
-            assert_eq!((60, 100, 70), Color::from_hex("b3b300").to_hsv());
+            assert_eq!((0.0, 0.0, 1.0), presets::WHITE.to_hsv());
+            assert_eq!((0.0, 0.0, 0.0), presets::BLACK.to_hsv());
+            assert_eq!((0.0, 1.0, 1.0), presets::RED.to_hsv());
+            assert_eq!((120.0, 1.0, 1.0), presets::GREEN.to_hsv());
+            assert_eq!((240.0, 1.0, 1.0), presets::BLUE.to_hsv());
         }
     }
 }
