@@ -1,3 +1,4 @@
+use crate::color::hsv_color::HSVColor;
 use crate::color::utils;
 
 pub mod presets;
@@ -15,14 +16,14 @@ pub struct RGBColor {
 pub const BASE: u32 = 255;
 
 impl RGBColor {
-    /// Creates `Color` from the given integer values.
+    /// Creates `RGBColor` from the given integer values.
     ///
     /// `r`: red, `g`: green, `b`: blue
     pub fn from_rgb(r: u8, g: u8, b: u8) -> RGBColor {
         RGBColor { r, g, b }
     }
 
-    /// Creates `Color` from the given decimal values.
+    /// Creates `RGBColor` from the given decimal values.
     ///
     /// Expects values from 0.0 to 1.0 (both inclusive)
     /// - If a value > 1 it will be treated as 1
@@ -35,14 +36,14 @@ impl RGBColor {
         }
     }
 
-    /// Creates `Color` from the given tuple.
+    /// Creates `RGBColor` from the given tuple.
     ///
     /// (r, g, b)
     pub fn from_rgb_tuple(tuple: (u8, u8, u8)) -> RGBColor {
         RGBColor::from_rgb(tuple.0, tuple.1, tuple.2)
     }
 
-    /// Creates `Color` from the given hex string.
+    /// Creates `RGBColor` from the given hex string.
     ///
     /// Accepts strings only with the following formats and length:
     /// - `f0f0f0` (`rrggbb`)
@@ -58,34 +59,34 @@ impl RGBColor {
         }
     }
 
-    /// Returns the value for channel red
+    /// Returns the value of channel red
     pub fn get_red(&self) -> u8 {
         self.r
     }
 
-    /// Returns the value for channel green
+    /// Returns the value of channel green
     pub fn get_green(&self) -> u8 {
         self.g
     }
 
-    /// Returns the value for channel blue
+    /// Returns the value of channel blue
     pub fn get_blue(&self) -> u8 {
         self.b
     }
 
-    /// Converts `Color` to a RGB Tuple
+    /// Converts `RGBColor` to an RGB Tuple
     pub fn to_rgb_tuple(&self) -> (u8, u8, u8) {
         (self.r, self.g, self.b)
     }
 
-    /// Converts `Color` to a HSV Tuple
+    /// Converts `RGBColor` to a HSV Tuple
     ///
     /// The tuple has the usual format:
     /// (hue, saturation, value)
     ///
     /// h in degrees (0 - 360)
     /// s, v in percent (0 - 1.0)
-    pub fn to_hsv(&self) -> (f64, f64, f64) {
+    pub fn to_hsv(&self) -> HSVColor {
         let r = utils::as_float(self.r);
         let g = utils::as_float(self.g);
         let b = utils::as_float(self.b);
@@ -107,10 +108,10 @@ impl RGBColor {
         let saturation = if c_max > 0.0 { delta / c_max } else { 0.0 };
         let value = c_max;
 
-        (hue, saturation, value)
+        HSVColor::from_hsv(hue, saturation, value)
     }
 
-    /// Converts `Color` to a `HEX` String (6 digits)
+    /// Converts `RGBColor` to a `HEX` String (6 digits)
     ///
     /// e.g. white => `"ffffff"`
     pub fn to_hex(&self) -> String {
@@ -118,7 +119,7 @@ impl RGBColor {
         format!("{:06x}", sum)
     }
 
-    /// Converts `Color` to a 3 digit `HEX` String
+    /// Converts `RGBColor` to a 3 digit `HEX` String
     ///
     /// e.g. white => `"fff"`
     ///
@@ -311,11 +312,11 @@ mod tests {
 
         #[test]
         fn presets() {
-            assert_eq!((0.0, 0.0, 1.0), presets::WHITE.to_hsv());
-            assert_eq!((0.0, 0.0, 0.0), presets::BLACK.to_hsv());
-            assert_eq!((0.0, 1.0, 1.0), presets::RED.to_hsv());
-            assert_eq!((120.0, 1.0, 1.0), presets::GREEN.to_hsv());
-            assert_eq!((240.0, 1.0, 1.0), presets::BLUE.to_hsv());
+            assert_eq!((0.0, 0.0, 1.0), presets::WHITE.to_hsv().as_tuple());
+            assert_eq!((0.0, 0.0, 0.0), presets::BLACK.to_hsv().as_tuple());
+            assert_eq!((0.0, 1.0, 1.0), presets::RED.to_hsv().as_tuple());
+            assert_eq!((120.0, 1.0, 1.0), presets::GREEN.to_hsv().as_tuple());
+            assert_eq!((240.0, 1.0, 1.0), presets::BLUE.to_hsv().as_tuple());
         }
     }
 }
