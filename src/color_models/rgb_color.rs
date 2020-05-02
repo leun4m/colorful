@@ -150,7 +150,19 @@ impl RGBColor {
     }
 
     /// Converts an integer to the corresponding RGB Color
+    ///
+    /// **Important:** Works only for specific bases:
+    /// 4, 16, 256
+    ///
+    /// # Panics
+    /// Will panic if another base is provided!
     fn from_int(mut value: u32, base: u32) -> RGBColor {
+        assert!(
+            base == 4 || base == 16 || base == 256,
+            "base must be one of these [4, 16, 256] but is instead {}",
+            base
+        );
+
         let factor = MAX_VALUE / (base - 1);
         let bit_move = (base as f64).log2() as u32;
 
@@ -208,165 +220,227 @@ impl Color for RGBColor {
 mod tests {
     use super::*;
 
-    mod from_hex {
-        use super::*;
-
-        #[test]
-        fn h6_presets() {
-            assert_eq!(presets::WHITE, RGBColor::from_hex("ffffff"));
-            assert_eq!(presets::BLACK, RGBColor::from_hex("000000"));
-            assert_eq!(presets::RED, RGBColor::from_hex("ff0000"));
-            assert_eq!(presets::GREEN, RGBColor::from_hex("00ff00"));
-            assert_eq!(presets::BLUE, RGBColor::from_hex("0000ff"));
-        }
-
-        #[test]
-        fn h6_custom() {
-            assert_eq!(
-                RGBColor::from_rgb(166, 65, 21),
-                RGBColor::from_hex("A64115")
-            );
-            assert_eq!(
-                RGBColor::from_rgb(21, 166, 65),
-                RGBColor::from_hex("15A641")
-            );
-            assert_eq!(
-                RGBColor::from_rgb(65, 21, 166),
-                RGBColor::from_hex("4115A6")
-            );
-        }
-
-        #[test]
-        #[should_panic]
-        fn too_long() {
-            RGBColor::from_hex("abcdefg");
-        }
-
-        #[test]
-        #[should_panic]
-        fn too_short() {
-            RGBColor::from_hex("ab");
-        }
-
-        #[test]
-        #[should_panic]
-        fn weird_chars() {
-            RGBColor::from_hex("axx");
-        }
-
-        #[test]
-        fn h3_presets() {
-            assert_eq!(presets::WHITE, RGBColor::from_hex("fff"));
-            assert_eq!(presets::BLACK, RGBColor::from_hex("000"));
-            assert_eq!(presets::RED, RGBColor::from_hex("f00"));
-            assert_eq!(presets::GREEN, RGBColor::from_hex("0f0"));
-            assert_eq!(presets::BLUE, RGBColor::from_hex("00f"));
-        }
-
-        #[test]
-        fn h3_custom() {
-            assert_eq!(RGBColor::from_rgb(255, 51, 153), RGBColor::from_hex("f39"));
-            assert_eq!(RGBColor::from_rgb(153, 255, 51), RGBColor::from_hex("9f3"));
-            assert_eq!(RGBColor::from_rgb(51, 153, 255), RGBColor::from_hex("39f"));
-        }
-
-        #[test]
-        fn h3_gray() {
-            assert_eq!(RGBColor::from_rgb(17, 17, 17), RGBColor::from_hex("111"));
-            assert_eq!(RGBColor::from_rgb(34, 34, 34), RGBColor::from_hex("222"));
-            assert_eq!(RGBColor::from_rgb(51, 51, 51), RGBColor::from_hex("333"));
-        }
+    #[test]
+    fn new__() {
+        assert_eq!(BLACK, RGBColor::new());
     }
 
-    mod from_rgb_tuple {
-        use super::*;
-
-        #[test]
-        fn custom() {
-            assert_eq!(RGBColor::from_rgb(1, 2, 3), RGBColor::from((1, 2, 3)));
-            assert_eq!(
-                RGBColor::from_rgb(255, 0, 127),
-                RGBColor::from((255, 0, 127))
-            );
-        }
+    #[test]
+    fn set_red__() {
+        let mut color = RGBColor::new();
+        assert_eq!(0, color.red());
+        color.set_red(3);
+        assert_eq!(3, color.red());
+        assert_eq!(0, color.green());
+        assert_eq!(0, color.blue());
     }
 
-    mod from_rgb_float {
-        use super::*;
-
-        #[test]
-        fn custom() {
-            assert_eq!("ffffff", RGBColor::from_rgb_f64(1.0, 1.0, 1.0).to_hex());
-            assert_eq!("000000", RGBColor::from_rgb_f64(0.0, 0.0, 0.0).to_hex());
-            assert_eq!("7f7f7f", RGBColor::from_rgb_f64(0.5, 0.5, 0.5).to_hex());
-            assert_eq!("333333", RGBColor::from_rgb_f64(0.2, 0.2, 0.2).to_hex());
-        }
-
-        #[test]
-        fn more_than_one() {
-            assert_eq!("ff0000", RGBColor::from_rgb_f64(2.0, 0.0, 0.0).to_hex());
-        }
-
-        #[test]
-        fn less_than_zero() {
-            assert_eq!("0000cc", RGBColor::from_rgb_f64(-0.5, -3.0, 0.8).to_hex());
-        }
+    #[test]
+    fn set_green__() {
+        let mut color = RGBColor::new();
+        assert_eq!(0, color.green());
+        color.set_green(42);
+        assert_eq!(0, color.red());
+        assert_eq!(42, color.green());
+        assert_eq!(0, color.blue());
     }
 
-    mod to_rgb_tuple {
-        use super::*;
-
-        #[test]
-        fn presets() {
-            assert_eq!((255, 255, 255), presets::WHITE.as_tuple());
-            assert_eq!((0, 0, 0), presets::BLACK.as_tuple());
-        }
-
-        #[test]
-        fn custom() {
-            assert_eq!((2, 20, 200), RGBColor::from_rgb(2, 20, 200).as_tuple());
-            assert_eq!((42, 13, 5), RGBColor::from_rgb(42, 13, 5).as_tuple());
-            assert_eq!((80, 252, 1), RGBColor::from_rgb(80, 252, 1).as_tuple());
-        }
+    #[test]
+    fn set_blue__() {
+        let mut color = RGBColor::new();
+        assert_eq!(0, color.blue());
+        color.set_blue(127);
+        assert_eq!(0, color.red());
+        assert_eq!(0, color.green());
+        assert_eq!(127, color.blue());
     }
 
-    mod to_hex {
-        use super::*;
-
-        #[test]
-        fn presets() {
-            assert_eq!("ffffff", presets::WHITE.to_hex());
-            assert_eq!("000000", presets::BLACK.to_hex());
-            assert_eq!("ff0000", presets::RED.to_hex());
-            assert_eq!("00ff00", presets::GREEN.to_hex());
-            assert_eq!("0000ff", presets::BLUE.to_hex());
-        }
-
-        #[test]
-        fn h3_custom() {
-            assert_eq!("ff3399", RGBColor::from_hex("f39").to_hex());
-            assert_eq!("225511", RGBColor::from_hex("251").to_hex());
-            assert_eq!("aa3322", RGBColor::from_hex("a32").to_hex());
-        }
+    #[test]
+    fn as_tuple__() {
+        let color = RGBColor::from((1, 27, 49));
+        assert_eq!((1, 27, 49), color.as_tuple());
     }
 
-    mod to_hex_3 {
-        use super::*;
+    #[test]
+    fn from_int__4() {
+        assert_eq!(BLACK, RGBColor::from_int(0, 4));
+        assert_eq!(WHITE, RGBColor::from_int(u32::pow(4, 3) - 1, 4));
 
-        #[test]
-        fn presets() {
-            assert_eq!("fff", presets::WHITE.to_hex_short());
-            assert_eq!("000", presets::BLACK.to_hex_short());
-            assert_eq!("f00", presets::RED.to_hex_short());
-            assert_eq!("0f0", presets::GREEN.to_hex_short());
-            assert_eq!("00f", presets::BLUE.to_hex_short());
-        }
+        assert_eq!(BLACK, RGBColor::from_int(0, 16));
+        assert_eq!(WHITE, RGBColor::from_int(u32::pow(16, 3) - 1, 16));
 
-        #[test]
-        fn custom() {
-            assert_eq!("eee", RGBColor::from_hex("f0f0f0").to_hex_short());
-            assert_eq!("123", RGBColor::from_hex("102030").to_hex_short());
-            assert_eq!("9ce", RGBColor::from_hex("a0c4ed").to_hex_short());
-        }
+        assert_eq!(BLACK, RGBColor::from_int(0, 256));
+        assert_eq!(WHITE, RGBColor::from_int(u32::pow(256, 3) - 1, 256));
+    }
+
+    #[test]
+    #[should_panic]
+    fn from_int__fail() {
+        RGBColor::from_int(0, 3);
+        RGBColor::from_int(0, 9);
+        RGBColor::from_int(0, 12);
+    }
+
+    #[test]
+    fn from_hex__h6_presets() {
+        assert_eq!(presets::WHITE, RGBColor::from_hex("ffffff"));
+        assert_eq!(presets::BLACK, RGBColor::from_hex("000000"));
+        assert_eq!(presets::RED, RGBColor::from_hex("ff0000"));
+        assert_eq!(presets::GREEN, RGBColor::from_hex("00ff00"));
+        assert_eq!(presets::BLUE, RGBColor::from_hex("0000ff"));
+    }
+
+    #[test]
+    fn from_hex__h6_custom() {
+        assert_eq!(
+            RGBColor::from_rgb(166, 65, 21),
+            RGBColor::from_hex("A64115")
+        );
+        assert_eq!(
+            RGBColor::from_rgb(21, 166, 65),
+            RGBColor::from_hex("15A641")
+        );
+        assert_eq!(
+            RGBColor::from_rgb(65, 21, 166),
+            RGBColor::from_hex("4115A6")
+        );
+    }
+
+    #[test]
+    #[should_panic]
+    fn from_hex__too_long() {
+        RGBColor::from_hex("abcdefg");
+    }
+
+    #[test]
+    #[should_panic]
+    fn from_hex__too_short() {
+        RGBColor::from_hex("ab");
+    }
+
+    #[test]
+    #[should_panic]
+    fn from_hex__weird_chars() {
+        RGBColor::from_hex("axx");
+    }
+
+    #[test]
+    fn from_hex__h3_presets() {
+        assert_eq!(presets::WHITE, RGBColor::from_hex("fff"));
+        assert_eq!(presets::BLACK, RGBColor::from_hex("000"));
+        assert_eq!(presets::RED, RGBColor::from_hex("f00"));
+        assert_eq!(presets::GREEN, RGBColor::from_hex("0f0"));
+        assert_eq!(presets::BLUE, RGBColor::from_hex("00f"));
+    }
+
+    #[test]
+    fn from_hex__h3_custom() {
+        assert_eq!(RGBColor::from_rgb(255, 51, 153), RGBColor::from_hex("f39"));
+        assert_eq!(RGBColor::from_rgb(153, 255, 51), RGBColor::from_hex("9f3"));
+        assert_eq!(RGBColor::from_rgb(51, 153, 255), RGBColor::from_hex("39f"));
+    }
+
+    #[test]
+    fn from_hex__h3_gray() {
+        assert_eq!(RGBColor::from_rgb(17, 17, 17), RGBColor::from_hex("111"));
+        assert_eq!(RGBColor::from_rgb(34, 34, 34), RGBColor::from_hex("222"));
+        assert_eq!(RGBColor::from_rgb(51, 51, 51), RGBColor::from_hex("333"));
+    }
+
+    #[test]
+    fn from_rgb_tuple__custom() {
+        assert_eq!(RGBColor::from_rgb(1, 2, 3), RGBColor::from((1, 2, 3)));
+        assert_eq!(
+            RGBColor::from_rgb(255, 0, 127),
+            RGBColor::from((255, 0, 127))
+        );
+    }
+
+    #[test]
+    fn from_rgb_float__custom() {
+        assert_eq!("ffffff", RGBColor::from_rgb_f64(1.0, 1.0, 1.0).to_hex());
+        assert_eq!("000000", RGBColor::from_rgb_f64(0.0, 0.0, 0.0).to_hex());
+        assert_eq!("7f7f7f", RGBColor::from_rgb_f64(0.5, 0.5, 0.5).to_hex());
+        assert_eq!("333333", RGBColor::from_rgb_f64(0.2, 0.2, 0.2).to_hex());
+    }
+
+    #[test]
+    fn from_rgb_float__more_than_one() {
+        assert_eq!("ff0000", RGBColor::from_rgb_f64(2.0, 0.0, 0.0).to_hex());
+    }
+
+    #[test]
+    fn from_rgb_float__less_than_zero() {
+        assert_eq!("0000cc", RGBColor::from_rgb_f64(-0.5, -3.0, 0.8).to_hex());
+    }
+
+    #[test]
+    fn to_rgb_tuple__presets() {
+        assert_eq!((255, 255, 255), presets::WHITE.as_tuple());
+        assert_eq!((0, 0, 0), presets::BLACK.as_tuple());
+    }
+
+    #[test]
+    fn to_rgb_tuple__custom() {
+        assert_eq!((2, 20, 200), RGBColor::from_rgb(2, 20, 200).as_tuple());
+        assert_eq!((42, 13, 5), RGBColor::from_rgb(42, 13, 5).as_tuple());
+        assert_eq!((80, 252, 1), RGBColor::from_rgb(80, 252, 1).as_tuple());
+    }
+
+    #[test]
+    fn to_hex__presets() {
+        assert_eq!("ffffff", presets::WHITE.to_hex());
+        assert_eq!("000000", presets::BLACK.to_hex());
+        assert_eq!("ff0000", presets::RED.to_hex());
+        assert_eq!("00ff00", presets::GREEN.to_hex());
+        assert_eq!("0000ff", presets::BLUE.to_hex());
+    }
+
+    #[test]
+    fn to_hex__h3_custom() {
+        assert_eq!("ff3399", RGBColor::from_hex("f39").to_hex());
+        assert_eq!("225511", RGBColor::from_hex("251").to_hex());
+        assert_eq!("aa3322", RGBColor::from_hex("a32").to_hex());
+    }
+
+    #[test]
+    fn to_hex_short__presets() {
+        assert_eq!("fff", presets::WHITE.to_hex_short());
+        assert_eq!("000", presets::BLACK.to_hex_short());
+        assert_eq!("f00", presets::RED.to_hex_short());
+        assert_eq!("0f0", presets::GREEN.to_hex_short());
+        assert_eq!("00f", presets::BLUE.to_hex_short());
+    }
+
+    #[test]
+    fn to_hex_short__custom() {
+        assert_eq!("eee", RGBColor::from_hex("f0f0f0").to_hex_short());
+        assert_eq!("123", RGBColor::from_hex("102030").to_hex_short());
+        assert_eq!("9ce", RGBColor::from_hex("a0c4ed").to_hex_short());
+    }
+
+    #[test]
+    fn from__f64_tuple() {
+        assert_eq!(
+            RGBColor::from_rgb_f64(0.5, 0.4, 0.7),
+            RGBColor::from((0.5, 0.4, 0.7))
+        )
+    }
+
+    #[test]
+    fn fmt__() {
+        assert_eq!("(R:0, G:0, B:0)", format!("{}", BLACK));
+        assert_eq!("(R:255, G:255, B:255)", format!("{}", WHITE));
+        assert_eq!("(R:0, G:255, B:0)", format!("{}", presets::GREEN));
+    }
+
+    #[test]
+    fn is_white__() {
+        assert!(WHITE.is_white())
+    }
+
+    #[test]
+    fn is_black__() {
+        assert!(BLACK.is_black())
     }
 }
