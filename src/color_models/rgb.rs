@@ -15,7 +15,7 @@ pub struct RGBColor {
 }
 
 /// The maximum value for each channel
-pub const MAX_VALUE: u32 = 255;
+pub const CHANNEL_MAX: u32 = 255;
 
 /// White as `RGBColor`
 pub const WHITE: RGBColor = presets::WHITE;
@@ -142,9 +142,9 @@ impl RGBColor {
     /// **Warning:** This is a *lossy* compression.
     /// It will round to the nearest value
     pub fn to_hex_short(&self) -> String {
-        let r = (self.r as f64 / MAX_VALUE as f64 * 15 as f64).round() as u32;
-        let g = (self.g as f64 / MAX_VALUE as f64 * 15 as f64).round() as u32;
-        let b = (self.b as f64 / MAX_VALUE as f64 * 15 as f64).round() as u32;
+        let r = (self.r as f64 / CHANNEL_MAX as f64 * 15 as f64).round() as u32;
+        let g = (self.g as f64 / CHANNEL_MAX as f64 * 15 as f64).round() as u32;
+        let b = (self.b as f64 / CHANNEL_MAX as f64 * 15 as f64).round() as u32;
 
         let sum: u32 = (r << 8) + (g << 4) + b;
         format!("{:03x}", sum)
@@ -164,7 +164,7 @@ impl RGBColor {
             base
         );
 
-        let factor = MAX_VALUE / (base - 1);
+        let factor = CHANNEL_MAX / (base - 1);
         let bit_move = (base as f64).log2() as u32;
 
         let b = ((value % base) * factor) as u8;
