@@ -1,6 +1,5 @@
-use crate::color_models::number_utils::convert_to_range;
-use crate::color_models::rgb::RGBColor;
-use crate::color_models::{number_utils, Color};
+use crate::color_models::Color;
+use crate::number_utils;
 
 /// Representation of a color_models stored as HSV channels.
 ///
@@ -69,9 +68,9 @@ impl HSVColor {
         );
 
         HSVColor {
-            h: convert_to_range(h, H_MIN, H_MAX),
-            s: convert_to_range(s, S_MIN, S_MAX),
-            v: convert_to_range(v, V_MIN, V_MAX),
+            h: number_utils::convert_to_range(h, H_MIN, H_MAX),
+            s: number_utils::convert_to_range(s, S_MIN, S_MAX),
+            v: number_utils::convert_to_range(v, V_MIN, V_MAX),
         }
     }
 
@@ -142,34 +141,6 @@ impl HSVColor {
     }
 }
 
-impl From<RGBColor> for HSVColor {
-    /// Converts `RGBColor` to a `HSVColor`
-    fn from(rgb_color: RGBColor) -> Self {
-        let r = number_utils::as_float(rgb_color.red());
-        let g = number_utils::as_float(rgb_color.green());
-        let b = number_utils::as_float(rgb_color.blue());
-
-        let c_max = number_utils::get_max(r, g, b);
-        let c_min = number_utils::get_min(r, g, b);
-        let delta = c_max - c_min;
-
-        let hue = if delta == 0.0 {
-            0.0
-        } else if r >= b && r >= g {
-            60.0 * (((g - b) / delta) % 6.0)
-        } else if g >= r && g >= b {
-            60.0 * (((b - r) / delta) + 2.0)
-        } else {
-            60.0 * (((r - g) / delta) + 4.0)
-        };
-
-        let saturation = if c_max > 0.0 { delta / c_max } else { 0.0 };
-        let value = c_max;
-
-        HSVColor::from_hsv(hue, saturation, value)
-    }
-}
-
 impl From<(f64, f64, f64)> for HSVColor {
     fn from(hsv: (f64, f64, f64)) -> Self {
         HSVColor::from_hsv(hsv.0, hsv.1, hsv.2)
@@ -205,21 +176,6 @@ mod tests {
     };
     use crate::color_models::rgb::presets;
     use crate::color_models::Color;
-
-    #[test]
-    fn from_rgb() {
-        assert_eq!((0.0, 0.0, 1.0), (HSVColor::from(presets::WHITE)).as_tuple());
-        assert_eq!((0.0, 0.0, 0.0), (HSVColor::from(presets::BLACK)).as_tuple());
-        assert_eq!((0.0, 1.0, 1.0), (HSVColor::from(presets::RED)).as_tuple());
-        assert_eq!(
-            (120.0, 1.0, 1.0),
-            (HSVColor::from(presets::GREEN)).as_tuple()
-        );
-        assert_eq!(
-            (240.0, 1.0, 1.0),
-            (HSVColor::from(presets::BLUE)).as_tuple()
-        );
-    }
 
     #[test]
     fn getter_setter() {

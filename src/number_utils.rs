@@ -89,9 +89,7 @@ pub fn convert_to_range(a: f64, min: f64, max: f64) -> f64 {
 
 #[cfg(test)]
 mod tests {
-    use crate::color_models::number_utils::{
-        approx_equal_f64, as_float, get_max, get_min, to_byte_repr,
-    };
+    use crate::number_utils::{approx_equal_f64, as_float, get_max, get_min, to_byte_repr};
 
     #[test]
     fn approx_equal_f64_nan_nan() {

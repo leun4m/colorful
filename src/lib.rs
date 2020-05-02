@@ -2,21 +2,14 @@
 //!
 //! # Color models
 //!
-//! - [RGB](https://en.wikipedia.org/wiki/RGB_color_model) - based on *red, green, blue*
-//! - [HSV](https://en.wikipedia.org/wiki/HSL_and_HSV) - based on *hue, saturation, value*
+//! - RGB [(Wikipedia)](https://en.wikipedia.org/wiki/RGB_color_model) - based on *red, green, blue*
+//! - HSV [(Wikipedia)](https://en.wikipedia.org/wiki/HSL_and_HSV) - based on *hue, saturation, value*
 
-/// A module containing different color_models models
+/// Contains different color models
 pub mod color_models;
 
-#[cfg(test)]
-mod tests {
-    use crate::color_models::hsv::HSVColor;
-    use crate::color_models::rgb::RGBColor;
-    use crate::color_models::Color;
+/// Contains the calculations for conversion between color models
+pub mod color_converter;
 
-    #[test]
-    fn it_works() {
-        let hsv: HSVColor = RGBColor::new().into();
-        assert!(hsv.is_black())
-    }
-}
+/// Contains various util methods for the work with numbers
+mod number_utils;

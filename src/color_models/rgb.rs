@@ -1,4 +1,7 @@
-use crate::color_models::{number_utils, Color};
+use crate::color_converter;
+use crate::color_models::hsv::HSVColor;
+use crate::color_models::Color;
+use crate::number_utils;
 use std::fmt::{Display, Formatter, Result};
 
 /// Contains predefined colors
@@ -148,6 +151,11 @@ impl RGBColor {
 
         let sum: u32 = (r << 8) + (g << 4) + b;
         format!("{:03x}", sum)
+    }
+
+    /// Converts `RGBColor` to a `HSVColor`
+    pub fn to_hsv(&self) -> HSVColor {
+        color_converter::rgb_to_hex(&self)
     }
 
     /// Converts an integer to the corresponding RGB Color
