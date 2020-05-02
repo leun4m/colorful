@@ -157,7 +157,7 @@ impl RGBColor {
     ///
     /// # Panics
     /// Will panic if another base is provided!
-    fn from_int(mut value: u32, base: u32) -> RGBColor {
+    fn from_int(mut value: u32, base: u32) -> Self {
         assert!(
             base == 4 || base == 16 || base == 256,
             "base must be one of these [4, 16, 256] but is instead {}",
