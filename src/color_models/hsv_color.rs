@@ -77,8 +77,11 @@ impl Color for HSVColor {
 
 impl PartialEq for HSVColor {
     fn eq(&self, other: &Self) -> bool {
+        const EPSILON: f64 = 0.000_001;
         // Compare floating points
-        self.h == other.h && self.s == other.s && self.v == other.v
+        utils::approx_equal_f64(self.h, other.h, EPSILON)
+            && utils::approx_equal_f64(self.s, other.s, EPSILON)
+            && utils::approx_equal_f64(self.v, other.v, EPSILON)
     }
 }
 
