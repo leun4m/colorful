@@ -15,17 +15,29 @@ pub fn as_float(a: u8) -> f64 {
     a as f64 / rgb_color::MAX_VALUE as f64
 }
 
+/// Converts a float to a byte
+///
+/// # Expects
+/// - values as fractions from 0.0 to 1.0
+/// - values > 1 will be treated as 1
+/// - values < 0 will be treated as 0
+/// - NAN => 0
 pub fn save_convert_float_to_byte(float: f64) -> u8 {
     if float >= 1.0 {
-        255
-    } else if float < 0.0 {
+        u8::MAX
+    } else if float <= 0.0 {
         0
     } else {
-        (float * 255.0) as u8
+        (float * u8::MAX as f64) as u8
     }
 }
 
-pub fn as_byte_tuple(floats: (f64, f64, f64)) -> (u8, u8, u8) {
+/// Converts a float triple to byte triple
+///
+/// **Expects fractions!**
+///
+/// For more info read comment `save_convert_float_to_byte`
+pub fn to_byte_tuple(floats: (f64, f64, f64)) -> (u8, u8, u8) {
     (
         save_convert_float_to_byte(floats.0),
         save_convert_float_to_byte(floats.1),
@@ -69,8 +81,9 @@ pub fn approx_equal_f64(a: f64, b: f64, epsilon: f64) -> bool {
 
 #[cfg(test)]
 mod tests {
-    use crate::color_models::number_utils::approx_equal_f64;
-    use core::num::FpCategory::Infinite;
+    use crate::color_models::number_utils::{
+        approx_equal_f64, as_float, get_max, get_min, save_convert_float_to_byte, to_byte_tuple,
+    };
     use std::f64::{INFINITY, NAN};
 
     #[test]
@@ -195,5 +208,100 @@ mod tests {
 
         assert!(approx_equal_f64(a, b, 0.1));
         assert!(approx_equal_f64(b, a, 0.1));
+    }
+
+    #[test]
+    fn to_byte_tuple__normal() {
+        let tuple = (0.0, 0.5, 1.0);
+        let result = to_byte_tuple(tuple);
+        assert_eq!((0, 127, 255), result);
+    }
+
+    #[test]
+    fn to_byte_tuple__values_lower_zero() {
+        let tuple = (-0.5, -0.9, -1042.4);
+        let result = to_byte_tuple(tuple);
+        assert_eq!((0, 0, 0), result);
+    }
+
+    #[test]
+    fn to_byte_tuple__values_higher_one() {
+        let tuple = (1.5, 1.9, 1042.4);
+        let result = to_byte_tuple(tuple);
+        assert_eq!((255, 255, 255), result);
+    }
+
+    #[test]
+    fn to_byte_tuple__values_infinite() {
+        let tuple = (INFINITY, -INFINITY, NAN);
+        let result = to_byte_tuple(tuple);
+        assert_eq!((255, 0, 0), result);
+    }
+
+    #[test]
+    fn save_convert_float_to_byte__normal() {
+        assert_eq!(0, save_convert_float_to_byte(0.0));
+        assert_eq!(51, save_convert_float_to_byte(0.2));
+        assert_eq!(127, save_convert_float_to_byte(0.5));
+        assert_eq!(255, save_convert_float_to_byte(1.0));
+    }
+
+    #[test]
+    fn save_convert_float_to_byte__lower_zero() {
+        assert_eq!(0, save_convert_float_to_byte(-0.0));
+        assert_eq!(0, save_convert_float_to_byte(-0.1));
+        assert_eq!(0, save_convert_float_to_byte(-12.5));
+        assert_eq!(0, save_convert_float_to_byte(-1124.0));
+    }
+
+    #[test]
+    fn save_convert_float_to_byte__higher_one() {
+        assert_eq!(255, save_convert_float_to_byte(1.0));
+        assert_eq!(255, save_convert_float_to_byte(1.1));
+        assert_eq!(255, save_convert_float_to_byte(112.5));
+        assert_eq!(255, save_convert_float_to_byte(1204.0));
+    }
+
+    #[test]
+    fn save_convert_float_to_byte__infinite() {
+        assert_eq!(0, save_convert_float_to_byte(NAN));
+        assert_eq!(0, save_convert_float_to_byte(-INFINITY));
+        assert_eq!(255, save_convert_float_to_byte(INFINITY));
+    }
+
+    #[test]
+    fn get_max__normal() {
+        assert_eq!(1.2, get_max(0.0, 0.1, 1.2));
+        assert_eq!(1.2, get_max(0.0, 1.2, 1.0));
+        assert_eq!(1.2, get_max(1.2, 0.1, 1.0));
+    }
+
+    #[test]
+    fn get_max__infinite() {
+        assert_eq!(1.2, get_max(0.0, NAN, 1.2));
+        assert_eq!(INFINITY, get_max(0.0, INFINITY, 1.0));
+        assert_eq!(-INFINITY, get_max(-INFINITY, -INFINITY, NAN));
+    }
+
+    #[test]
+    fn get_min__normal() {
+        assert_eq!(0.0, get_min(0.0, 0.1, 1.2));
+        assert_eq!(-5.0, get_min(-5.0, 1.2, 1.0));
+        assert_eq!(0.1, get_min(1.2, 0.1, 1.0));
+    }
+
+    #[test]
+    fn get_min__infinite() {
+        assert_eq!(0.0, get_min(0.0, NAN, 1.2));
+        assert_eq!(0.0, get_min(0.0, INFINITY, 1.0));
+        assert_eq!(INFINITY, get_min(INFINITY, INFINITY, NAN));
+    }
+
+    #[test]
+    fn as_float__normal() {
+        assert!(approx_equal_f64(0.0, as_float(0), 0.01));
+        assert!(approx_equal_f64(0.2, as_float(51), 0.01));
+        assert!(approx_equal_f64(0.5, as_float(127), 0.01));
+        assert!(approx_equal_f64(1.0, as_float(255), 0.01));
     }
 }
