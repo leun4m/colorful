@@ -48,10 +48,10 @@ pub fn to_byte_repr(float: f64) -> u8 {
 /// *In this special cases epsilon will be ignored*
 ///
 /// - `NAN == NAN`
-/// - `NAN != INFINITY`
-/// - `INFINITY` == `INFINITY`
-/// - `-INFINITY` == `-INFINITY`
-/// - `INFINITY` != `-INFINITY`
+/// - `NAN != f64::INFINITY`
+/// - `f64::INFINITY` == `f64::INFINITY`
+/// - `f64::NEG_INFINITY` == `f64::NEG_INFINITY`
+/// - `f64::INFINITY` != `f64::NEG_INFINITY`
 pub fn approx_equal_f64(a: f64, b: f64, epsilon: f64) -> bool {
     // If exactly one of the values is not finite
     if (a.is_finite() && !b.is_finite()) || (!a.is_finite() && b.is_finite()) {
@@ -92,19 +92,18 @@ mod tests {
     use crate::color_models::number_utils::{
         approx_equal_f64, as_float, get_max, get_min, to_byte_repr,
     };
-    use std::f64::{INFINITY, NAN};
 
     #[test]
     fn approx_equal_f64_nan_nan() {
-        let a = NAN;
-        let b = NAN;
+        let a = f64::NAN;
+        let b = f64::NAN;
         assert!(approx_equal_f64(a, b, 1.0));
         assert!(approx_equal_f64(b, a, 1.0));
     }
 
     #[test]
     fn approx_equal_f64_nan_normal() {
-        let a = NAN;
+        let a = f64::NAN;
         let b = 2.1458921;
         assert!(!approx_equal_f64(a, b, 1.0));
         assert!(!approx_equal_f64(b, a, 1.0));
@@ -112,7 +111,7 @@ mod tests {
 
     #[test]
     fn approx_equal_f64_infinity_normal() {
-        let a = INFINITY;
+        let a = f64::f64::INFINITY;
         let b = 1.7927498;
         assert!(!approx_equal_f64(a, b, 1.0));
         assert!(!approx_equal_f64(b, a, 1.0));
@@ -120,7 +119,7 @@ mod tests {
 
     #[test]
     fn approx_equal_f64_minfinity_normal() {
-        let a = -INFINITY;
+        let a = f64::NEG_INFINITY;
         let b = 4.0548962;
         assert!(!approx_equal_f64(a, b, 1.0));
         assert!(!approx_equal_f64(b, a, 1.0));
@@ -128,32 +127,32 @@ mod tests {
 
     #[test]
     fn approx_equal_f64_infinity_nan() {
-        let a = INFINITY;
-        let b = NAN;
+        let a = f64::INFINITY;
+        let b = f64::NAN;
         assert!(!approx_equal_f64(a, b, 1.0));
         assert!(!approx_equal_f64(b, a, 1.0));
     }
 
     #[test]
     fn approx_equal_f64_minfinity_nan() {
-        let a = -INFINITY;
-        let b = NAN;
+        let a = f64::NEG_INFINITY;
+        let b = f64::NAN;
         assert!(!approx_equal_f64(a, b, 1.0));
         assert!(!approx_equal_f64(b, a, 1.0));
     }
 
     #[test]
     fn approx_equal_f64_infinity_infinity() {
-        let a = INFINITY;
-        let b = INFINITY;
+        let a = f64::INFINITY;
+        let b = f64::INFINITY;
         assert!(approx_equal_f64(a, b, 1.0));
         assert!(approx_equal_f64(b, a, 1.0));
     }
 
     #[test]
-    fn approx_equal_f64_minfinity_minfinity() {
-        let a = -INFINITY;
-        let b = -INFINITY;
+    fn approx_equal_f64_neg_infinity_neg_infinity() {
+        let a = f64::NEG_INFINITY;
+        let b = f64::NEG_INFINITY;
         assert!(approx_equal_f64(a, b, 1.0));
         assert!(approx_equal_f64(b, a, 1.0));
     }
@@ -167,7 +166,7 @@ mod tests {
     }
 
     #[test]
-    fn approx_equal_f64_normal_mnormal_exact() {
+    fn approx_equal_f64_normal_neg_normal_exact() {
         let a = 29.1124521;
         let b = -29.1124521;
         assert!(!approx_equal_f64(a, b, 0.00001));
@@ -175,7 +174,7 @@ mod tests {
     }
 
     #[test]
-    fn approx_equal_f64_mnormal_mnormal_exact() {
+    fn approx_equal_f64_neg_normal_neg_normal_exact() {
         let a = -29.1124521;
         let b = -29.1124521;
         assert!(approx_equal_f64(a, b, 0.000_000_001));
@@ -183,7 +182,7 @@ mod tests {
     }
 
     #[test]
-    fn approx_equal_f64_mnormal_mnormal() {
+    fn approx_equal_f64_neg_normal_neg_normal() {
         let a = -29.12345;
         let b = -29.12346;
 
@@ -244,9 +243,9 @@ mod tests {
 
     #[test]
     fn save_convert_float_to_byte_infinite() {
-        assert_eq!(0, to_byte_repr(NAN));
-        assert_eq!(0, to_byte_repr(-INFINITY));
-        assert_eq!(255, to_byte_repr(INFINITY));
+        assert_eq!(0, to_byte_repr(f64::NAN));
+        assert_eq!(0, to_byte_repr(f64::NEG_INFINITY));
+        assert_eq!(255, to_byte_repr(f64::INFINITY));
     }
 
     #[test]
@@ -258,9 +257,12 @@ mod tests {
 
     #[test]
     fn get_max_infinite() {
-        assert_eq!(1.2, get_max(0.0, NAN, 1.2));
-        assert_eq!(INFINITY, get_max(0.0, INFINITY, 1.0));
-        assert_eq!(-INFINITY, get_max(-INFINITY, -INFINITY, NAN));
+        assert_eq!(1.2, get_max(0.0, f64::NAN, 1.2));
+        assert_eq!(f64::INFINITY, get_max(0.0, f64::INFINITY, 1.0));
+        assert_eq!(
+            f64::NEG_INFINITY,
+            get_max(f64::NEG_INFINITY, f64::NEG_INFINITY, f64::NAN)
+        );
     }
 
     #[test]
@@ -272,9 +274,12 @@ mod tests {
 
     #[test]
     fn get_min_infinite() {
-        assert_eq!(0.0, get_min(0.0, NAN, 1.2));
-        assert_eq!(0.0, get_min(0.0, INFINITY, 1.0));
-        assert_eq!(INFINITY, get_min(INFINITY, INFINITY, NAN));
+        assert_eq!(0.0, get_min(0.0, f64::NAN, 1.2));
+        assert_eq!(0.0, get_min(0.0, f64::INFINITY, 1.0));
+        assert_eq!(
+            f64::INFINITY,
+            get_min(f64::INFINITY, f64::INFINITY, f64::NAN)
+        );
     }
 
     #[test]
