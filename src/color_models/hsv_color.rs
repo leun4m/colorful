@@ -13,8 +13,8 @@ pub struct HSVColor {
     v: f64,
 }
 
-/// Used for comparision between to HSV Colors
-const EPSILON: f64 = 0.000_000_1;
+/// Used for the precision of equality between to HSV Colors
+pub const EPSILON: f64 = 0.000_000_1;
 
 /// White as `HSVColor`
 pub const WHITE: HSVColor = HSVColor {
@@ -31,12 +31,51 @@ pub const BLACK: HSVColor = HSVColor {
 };
 
 impl HSVColor {
-    pub fn from_hsv(h: f64, s: f64, v: f64) -> HSVColor {
+    /// Creates a new `HSVColor`, setting all values to zero
+    ///
+    /// This is *black*.
+    pub fn new() -> Self {
+        HSVColor::from_hsv(0.0, 0.0, 0.0)
+    }
+
+    /// Creates a new `HSVColor` from the given floating point values.
+    pub fn from_hsv(h: f64, s: f64, v: f64) -> Self {
         HSVColor { h, s, v }
     }
 
+    /// Returns values as tuple (H, S, V)
     pub fn as_tuple(&self) -> (f64, f64, f64) {
         (self.h, self.s, self.v)
+    }
+
+    /// Returns value of channel **hue**
+    pub fn h(&self) -> f64 {
+        self.h
+    }
+
+    /// Returns value of channel **saturation+*
+    pub fn s(&self) -> f64 {
+        self.s
+    }
+
+    /// Returns value of channel **value**
+    pub fn v(&self) -> f64 {
+        self.v
+    }
+
+    /// Sets value of channel **hue**
+    pub fn set_h(&mut self, h: f64) {
+        self.h = h;
+    }
+
+    /// Sets value of channel **saturation**
+    pub fn set_s(&mut self, s: f64) {
+        self.s = s;
+    }
+
+    /// Sets value of channel **value**
+    pub fn set_v(&mut self, v: f64) {
+        self.v = v;
     }
 }
 
@@ -79,6 +118,9 @@ impl Color for HSVColor {
 }
 
 impl PartialEq for HSVColor {
+    /// Checks if both colors are equal.
+    ///
+    /// Since this uses f64 it will check against [EPSILON](constant.EPSILON.html)
     fn eq(&self, other: &Self) -> bool {
         // Compare floating points
         number_utils::approx_equal_f64(self.h, other.h, EPSILON)
@@ -105,5 +147,19 @@ mod tests {
             (240.0, 1.0, 1.0),
             (HSVColor::from(presets::BLUE)).as_tuple()
         );
+    }
+
+    #[test]
+    fn getter_setter() {
+        let mut color = HSVColor::new();
+        assert_eq!(0.0, color.h());
+        assert_eq!(0.0, color.s());
+        assert_eq!(0.0, color.v());
+        color.set_h(120.0);
+        color.set_s(0.5);
+        color.set_v(1.0);
+        assert_eq!(120.0, color.h());
+        assert_eq!(0.5, color.s());
+        assert_eq!(1.0, color.v());
     }
 }
