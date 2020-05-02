@@ -1,11 +1,10 @@
-use crate::color_models::hsv_color::HSVColor;
-use crate::color_models::utils;
+use crate::color_models::{utils, Color};
 use std::fmt::{Display, Formatter, Result};
 
 /// Contains predefined colors
 pub mod presets;
 
-/// Representation of a color_models stored as RGB channels.
+/// Representation of a color model stored as RGB channels.
 ///
 /// Each channel is stored as `u8` (0-255)
 #[derive(Debug)]
@@ -15,9 +14,27 @@ pub struct RGBColor {
     b: u8,
 }
 
-pub const BASE: u32 = 255;
+/// The maximum value for each channel
+pub const MAX_VALUE: u32 = 255;
+
+/// White as `RGBColor`
+pub const WHITE: RGBColor = RGBColor {
+    r: 255,
+    g: 255,
+    b: 255,
+};
+
+/// Black as `RGBColor`
+pub const BLACK: RGBColor = RGBColor { r: 0, g: 0, b: 0 };
 
 impl RGBColor {
+    /// Creates a new `RGBColor`, setting all values to zero.
+    ///
+    /// This is *black*.
+    pub fn new() -> Self {
+        RGBColor::from_rgb(0, 0, 0)
+    }
+
     /// Creates a new `RGBColor` from the given integer values.
     ///
     /// # Arguments
@@ -89,41 +106,24 @@ impl RGBColor {
         self.b
     }
 
+    /// Sets the value of channel red
+    pub fn set_red(&mut self, r: u8) {
+        self.r = r
+    }
+
+    /// Sets the value of channel green
+    pub fn set_green(&mut self, g: u8) {
+        self.g = g
+    }
+
+    /// Sets the value of channel blue
+    pub fn set_blue(&mut self, b: u8) {
+        self.b = b
+    }
+
     /// Converts `RGBColor` to an RGB Tuple
     pub fn as_tuple(&self) -> (u8, u8, u8) {
         (self.r, self.g, self.b)
-    }
-
-    /// Converts `RGBColor` to a HSV Tuple
-    ///
-    /// The tuple has the usual format:
-    /// (hue, saturation, value)
-    ///
-    /// h in degrees (0 - 360)
-    /// s, v in percent (0 - 1.0)
-    pub fn to_hsv(&self) -> HSVColor {
-        let r = utils::as_float(self.r);
-        let g = utils::as_float(self.g);
-        let b = utils::as_float(self.b);
-
-        let c_max = utils::get_max(r, g, b);
-        let c_min = utils::get_min(r, g, b);
-        let delta = c_max - c_min;
-
-        let hue = if delta == 0.0 {
-            0.0
-        } else if r >= b && r >= g {
-            60.0 * (((g - b) / delta) % 6.0)
-        } else if g >= r && g >= b {
-            60.0 * (((b - r) / delta) + 2.0)
-        } else {
-            60.0 * (((r - g) / delta) + 4.0)
-        };
-
-        let saturation = if c_max > 0.0 { delta / c_max } else { 0.0 };
-        let value = c_max;
-
-        HSVColor::from_hsv(hue, saturation, value)
     }
 
     /// Converts `RGBColor` to a `HEX` String (6 digits)
@@ -140,10 +140,10 @@ impl RGBColor {
     ///
     /// **Warning:** This is a *lossy* compression.
     /// It will round to the nearest value
-    pub fn to_hex_3(&self) -> String {
-        let r = (self.r as f64 / BASE as f64 * 15 as f64).round() as u32;
-        let g = (self.g as f64 / BASE as f64 * 15 as f64).round() as u32;
-        let b = (self.b as f64 / BASE as f64 * 15 as f64).round() as u32;
+    pub fn to_hex_short(&self) -> String {
+        let r = (self.r as f64 / MAX_VALUE as f64 * 15 as f64).round() as u32;
+        let g = (self.g as f64 / MAX_VALUE as f64 * 15 as f64).round() as u32;
+        let b = (self.b as f64 / MAX_VALUE as f64 * 15 as f64).round() as u32;
 
         let sum: u32 = (r << 8) + (g << 4) + b;
         format!("{:03x}", sum)
@@ -151,7 +151,7 @@ impl RGBColor {
 
     /// Converts an integer to the corresponding RGB Color
     fn from_int(mut value: u32, base: u32) -> RGBColor {
-        let factor = BASE / (base - 1);
+        let factor = MAX_VALUE / (base - 1);
         let bit_move = (base as f64).log2() as u32;
 
         let b = ((value % base) * factor) as u8;
@@ -191,6 +191,16 @@ impl Display for RGBColor {
 impl PartialEq for RGBColor {
     fn eq(&self, other: &Self) -> bool {
         self.r == other.r && self.g == other.g && self.b == other.b
+    }
+}
+
+impl Color for RGBColor {
+    fn is_white(&self) -> bool {
+        self == &WHITE
+    }
+
+    fn is_black(&self) -> bool {
+        self == &BLACK
     }
 }
 
@@ -345,31 +355,18 @@ mod tests {
 
         #[test]
         fn presets() {
-            assert_eq!("fff", presets::WHITE.to_hex_3());
-            assert_eq!("000", presets::BLACK.to_hex_3());
-            assert_eq!("f00", presets::RED.to_hex_3());
-            assert_eq!("0f0", presets::GREEN.to_hex_3());
-            assert_eq!("00f", presets::BLUE.to_hex_3());
+            assert_eq!("fff", presets::WHITE.to_hex_short());
+            assert_eq!("000", presets::BLACK.to_hex_short());
+            assert_eq!("f00", presets::RED.to_hex_short());
+            assert_eq!("0f0", presets::GREEN.to_hex_short());
+            assert_eq!("00f", presets::BLUE.to_hex_short());
         }
 
         #[test]
         fn custom() {
-            assert_eq!("eee", RGBColor::from_hex("f0f0f0").to_hex_3());
-            assert_eq!("123", RGBColor::from_hex("102030").to_hex_3());
-            assert_eq!("9ce", RGBColor::from_hex("a0c4ed").to_hex_3());
-        }
-    }
-
-    mod to_hsv {
-        use super::*;
-
-        #[test]
-        fn presets() {
-            assert_eq!((0.0, 0.0, 1.0), presets::WHITE.to_hsv().as_tuple());
-            assert_eq!((0.0, 0.0, 0.0), presets::BLACK.to_hsv().as_tuple());
-            assert_eq!((0.0, 1.0, 1.0), presets::RED.to_hsv().as_tuple());
-            assert_eq!((120.0, 1.0, 1.0), presets::GREEN.to_hsv().as_tuple());
-            assert_eq!((240.0, 1.0, 1.0), presets::BLUE.to_hsv().as_tuple());
+            assert_eq!("eee", RGBColor::from_hex("f0f0f0").to_hex_short());
+            assert_eq!("123", RGBColor::from_hex("102030").to_hex_short());
+            assert_eq!("9ce", RGBColor::from_hex("a0c4ed").to_hex_short());
         }
     }
 }

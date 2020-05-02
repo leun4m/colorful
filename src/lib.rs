@@ -10,8 +10,13 @@ pub mod color_models;
 
 #[cfg(test)]
 mod tests {
+    use crate::color_models::hsv_color::HSVColor;
+    use crate::color_models::rgb_color::RGBColor;
+    use crate::color_models::Color;
+
     #[test]
     fn it_works() {
-        assert_eq!(2 + 2, 4);
+        let hsv: HSVColor = RGBColor::new().into();
+        assert!(hsv.is_black())
     }
 }

@@ -4,3 +4,10 @@ pub mod hsv_color;
 pub mod rgb_color;
 
 mod utils;
+
+pub trait Color {
+    /// Returns if color is (absolute) white
+    fn is_white(&self) -> bool;
+    /// Returns if color is (absolute) black
+    fn is_black(&self) -> bool;
+}
