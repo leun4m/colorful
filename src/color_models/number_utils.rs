@@ -1,4 +1,4 @@
-use crate::color_models::rgb_color;
+use crate::color_models::rgb;
 
 /// Calculates the maximum value of the given triple
 pub fn get_max(a: f64, b: f64, c: f64) -> f64 {
@@ -12,7 +12,7 @@ pub fn get_min(a: f64, b: f64, c: f64) -> f64 {
 
 /// Converts *byte* to *float* representation
 pub fn as_float(a: u8) -> f64 {
-    a as f64 / rgb_color::MAX_VALUE as f64
+    a as f64 / rgb::MAX_VALUE as f64
 }
 
 /// Converts *byte* to *float* representation
@@ -111,7 +111,7 @@ mod tests {
 
     #[test]
     fn approx_equal_f64_infinity_normal() {
-        let a = f64::f64::INFINITY;
+        let a = f64::INFINITY;
         let b = 1.7927498;
         assert!(!approx_equal_f64(a, b, 1.0));
         assert!(!approx_equal_f64(b, a, 1.0));

@@ -1,4 +1,4 @@
-use crate::color_models::rgb_color::RGBColor;
+use crate::color_models::rgb::RGBColor;
 
 /// Perfect white: `#fff`
 pub const WHITE: RGBColor = RGBColor {

@@ -1,5 +1,5 @@
 use crate::color_models::number_utils::convert_to_range;
-use crate::color_models::rgb_color::RGBColor;
+use crate::color_models::rgb::RGBColor;
 use crate::color_models::{number_utils, Color};
 
 /// Representation of a color_models stored as HSV channels.
@@ -200,10 +200,10 @@ impl PartialEq for HSVColor {
 
 #[cfg(test)]
 mod tests {
-    use crate::color_models::hsv_color::{
+    use crate::color_models::hsv::{
         HSVColor, BLACK, H_MAX, H_MIN, S_MAX, S_MIN, V_MAX, V_MIN, WHITE,
     };
-    use crate::color_models::rgb_color::presets;
+    use crate::color_models::rgb::presets;
     use crate::color_models::Color;
 
     #[test]

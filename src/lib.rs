@@ -10,8 +10,8 @@ pub mod color_models;
 
 #[cfg(test)]
 mod tests {
-    use crate::color_models::hsv_color::HSVColor;
-    use crate::color_models::rgb_color::RGBColor;
+    use crate::color_models::hsv::HSVColor;
+    use crate::color_models::rgb::RGBColor;
     use crate::color_models::Color;
 
     #[test]

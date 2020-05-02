@@ -1,7 +1,7 @@
 /// A module for the HSV color model
-pub mod hsv_color;
+pub mod hsv;
 /// A module for the RGB color model
-pub mod rgb_color;
+pub mod rgb;
 
 mod number_utils;
 
