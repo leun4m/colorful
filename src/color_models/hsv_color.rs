@@ -13,6 +13,9 @@ pub struct HSVColor {
     v: f64,
 }
 
+/// Used for comparision between to HSV Colors
+const EPSILON: f64 = 0.000_000_1;
+
 /// White as `HSVColor`
 pub const WHITE: HSVColor = HSVColor {
     h: 0.0,
@@ -77,7 +80,6 @@ impl Color for HSVColor {
 
 impl PartialEq for HSVColor {
     fn eq(&self, other: &Self) -> bool {
-        const EPSILON: f64 = 0.000_001;
         // Compare floating points
         number_utils::approx_equal_f64(self.h, other.h, EPSILON)
             && number_utils::approx_equal_f64(self.s, other.s, EPSILON)

@@ -18,14 +18,10 @@ pub struct RGBColor {
 pub const MAX_VALUE: u32 = 255;
 
 /// White as `RGBColor`
-pub const WHITE: RGBColor = RGBColor {
-    r: 255,
-    g: 255,
-    b: 255,
-};
+pub const WHITE: RGBColor = presets::WHITE;
 
 /// Black as `RGBColor`
-pub const BLACK: RGBColor = RGBColor { r: 0, g: 0, b: 0 };
+pub const BLACK: RGBColor = presets::BLACK;
 
 impl RGBColor {
     /// Creates a new `RGBColor`, setting all values to zero.
@@ -58,9 +54,9 @@ impl RGBColor {
     /// - Any values < 0 it will be treated as 0
     pub fn from_rgb_f64(r: f64, g: f64, b: f64) -> Self {
         RGBColor::from_rgb(
-            number_utils::save_convert_float_to_byte(r),
-            number_utils::save_convert_float_to_byte(g),
-            number_utils::save_convert_float_to_byte(b),
+            number_utils::to_byte_repr(r),
+            number_utils::to_byte_repr(g),
+            number_utils::to_byte_repr(b),
         )
     }
 
@@ -124,6 +120,11 @@ impl RGBColor {
     /// Converts `RGBColor` to an RGB Tuple
     pub fn as_tuple(&self) -> (u8, u8, u8) {
         (self.r, self.g, self.b)
+    }
+
+    /// Converts `RGBColor` to an RGB Tuple using fractions
+    pub fn as_tuple_f64(&self) -> (f64, f64, f64) {
+        number_utils::as_float_tuple(self.as_tuple())
     }
 
     /// Converts `RGBColor` to a `HEX` String (6 digits)
@@ -221,12 +222,12 @@ mod tests {
     use super::*;
 
     #[test]
-    fn new__() {
+    fn new_() {
         assert_eq!(BLACK, RGBColor::new());
     }
 
     #[test]
-    fn set_red__() {
+    fn set_red_() {
         let mut color = RGBColor::new();
         assert_eq!(0, color.red());
         color.set_red(3);
@@ -236,7 +237,7 @@ mod tests {
     }
 
     #[test]
-    fn set_green__() {
+    fn set_green_() {
         let mut color = RGBColor::new();
         assert_eq!(0, color.green());
         color.set_green(42);
@@ -246,7 +247,7 @@ mod tests {
     }
 
     #[test]
-    fn set_blue__() {
+    fn set_blue_() {
         let mut color = RGBColor::new();
         assert_eq!(0, color.blue());
         color.set_blue(127);
@@ -256,13 +257,13 @@ mod tests {
     }
 
     #[test]
-    fn as_tuple__() {
+    fn as_tuple_() {
         let color = RGBColor::from((1, 27, 49));
         assert_eq!((1, 27, 49), color.as_tuple());
     }
 
     #[test]
-    fn from_int__4() {
+    fn from_int_4() {
         assert_eq!(BLACK, RGBColor::from_int(0, 4));
         assert_eq!(WHITE, RGBColor::from_int(u32::pow(4, 3) - 1, 4));
 
@@ -275,14 +276,14 @@ mod tests {
 
     #[test]
     #[should_panic]
-    fn from_int__fail() {
+    fn from_int_fail() {
         RGBColor::from_int(0, 3);
         RGBColor::from_int(0, 9);
         RGBColor::from_int(0, 12);
     }
 
     #[test]
-    fn from_hex__h6_presets() {
+    fn from_hex_h6_presets() {
         assert_eq!(presets::WHITE, RGBColor::from_hex("ffffff"));
         assert_eq!(presets::BLACK, RGBColor::from_hex("000000"));
         assert_eq!(presets::RED, RGBColor::from_hex("ff0000"));
@@ -291,7 +292,7 @@ mod tests {
     }
 
     #[test]
-    fn from_hex__h6_custom() {
+    fn from_hex_h6_custom() {
         assert_eq!(
             RGBColor::from_rgb(166, 65, 21),
             RGBColor::from_hex("A64115")
@@ -308,24 +309,24 @@ mod tests {
 
     #[test]
     #[should_panic]
-    fn from_hex__too_long() {
+    fn from_hex_too_long() {
         RGBColor::from_hex("abcdefg");
     }
 
     #[test]
     #[should_panic]
-    fn from_hex__too_short() {
+    fn from_hex_too_short() {
         RGBColor::from_hex("ab");
     }
 
     #[test]
     #[should_panic]
-    fn from_hex__weird_chars() {
+    fn from_hex_weird_chars() {
         RGBColor::from_hex("axx");
     }
 
     #[test]
-    fn from_hex__h3_presets() {
+    fn from_hex_h3_presets() {
         assert_eq!(presets::WHITE, RGBColor::from_hex("fff"));
         assert_eq!(presets::BLACK, RGBColor::from_hex("000"));
         assert_eq!(presets::RED, RGBColor::from_hex("f00"));
@@ -334,21 +335,21 @@ mod tests {
     }
 
     #[test]
-    fn from_hex__h3_custom() {
+    fn from_hex_h3_custom() {
         assert_eq!(RGBColor::from_rgb(255, 51, 153), RGBColor::from_hex("f39"));
         assert_eq!(RGBColor::from_rgb(153, 255, 51), RGBColor::from_hex("9f3"));
         assert_eq!(RGBColor::from_rgb(51, 153, 255), RGBColor::from_hex("39f"));
     }
 
     #[test]
-    fn from_hex__h3_gray() {
+    fn from_hex_h3_gray() {
         assert_eq!(RGBColor::from_rgb(17, 17, 17), RGBColor::from_hex("111"));
         assert_eq!(RGBColor::from_rgb(34, 34, 34), RGBColor::from_hex("222"));
         assert_eq!(RGBColor::from_rgb(51, 51, 51), RGBColor::from_hex("333"));
     }
 
     #[test]
-    fn from_rgb_tuple__custom() {
+    fn from_rgb_tuple_custom() {
         assert_eq!(RGBColor::from_rgb(1, 2, 3), RGBColor::from((1, 2, 3)));
         assert_eq!(
             RGBColor::from_rgb(255, 0, 127),
@@ -357,7 +358,7 @@ mod tests {
     }
 
     #[test]
-    fn from_rgb_float__custom() {
+    fn from_rgb_float_custom() {
         assert_eq!("ffffff", RGBColor::from_rgb_f64(1.0, 1.0, 1.0).to_hex());
         assert_eq!("000000", RGBColor::from_rgb_f64(0.0, 0.0, 0.0).to_hex());
         assert_eq!("7f7f7f", RGBColor::from_rgb_f64(0.5, 0.5, 0.5).to_hex());
@@ -365,30 +366,30 @@ mod tests {
     }
 
     #[test]
-    fn from_rgb_float__more_than_one() {
+    fn from_rgb_float_more_than_one() {
         assert_eq!("ff0000", RGBColor::from_rgb_f64(2.0, 0.0, 0.0).to_hex());
     }
 
     #[test]
-    fn from_rgb_float__less_than_zero() {
+    fn from_rgb_float_less_than_zero() {
         assert_eq!("0000cc", RGBColor::from_rgb_f64(-0.5, -3.0, 0.8).to_hex());
     }
 
     #[test]
-    fn to_rgb_tuple__presets() {
+    fn to_rgb_tuple_presets() {
         assert_eq!((255, 255, 255), presets::WHITE.as_tuple());
         assert_eq!((0, 0, 0), presets::BLACK.as_tuple());
     }
 
     #[test]
-    fn to_rgb_tuple__custom() {
+    fn to_rgb_tuple_custom() {
         assert_eq!((2, 20, 200), RGBColor::from_rgb(2, 20, 200).as_tuple());
         assert_eq!((42, 13, 5), RGBColor::from_rgb(42, 13, 5).as_tuple());
         assert_eq!((80, 252, 1), RGBColor::from_rgb(80, 252, 1).as_tuple());
     }
 
     #[test]
-    fn to_hex__presets() {
+    fn to_hex_presets() {
         assert_eq!("ffffff", presets::WHITE.to_hex());
         assert_eq!("000000", presets::BLACK.to_hex());
         assert_eq!("ff0000", presets::RED.to_hex());
@@ -397,14 +398,14 @@ mod tests {
     }
 
     #[test]
-    fn to_hex__h3_custom() {
+    fn to_hex_h3_custom() {
         assert_eq!("ff3399", RGBColor::from_hex("f39").to_hex());
         assert_eq!("225511", RGBColor::from_hex("251").to_hex());
         assert_eq!("aa3322", RGBColor::from_hex("a32").to_hex());
     }
 
     #[test]
-    fn to_hex_short__presets() {
+    fn to_hex_short_presets() {
         assert_eq!("fff", presets::WHITE.to_hex_short());
         assert_eq!("000", presets::BLACK.to_hex_short());
         assert_eq!("f00", presets::RED.to_hex_short());
@@ -413,14 +414,14 @@ mod tests {
     }
 
     #[test]
-    fn to_hex_short__custom() {
+    fn to_hex_short_custom() {
         assert_eq!("eee", RGBColor::from_hex("f0f0f0").to_hex_short());
         assert_eq!("123", RGBColor::from_hex("102030").to_hex_short());
         assert_eq!("9ce", RGBColor::from_hex("a0c4ed").to_hex_short());
     }
 
     #[test]
-    fn from__f64_tuple() {
+    fn from_f64_tuple() {
         assert_eq!(
             RGBColor::from_rgb_f64(0.5, 0.4, 0.7),
             RGBColor::from((0.5, 0.4, 0.7))
@@ -428,19 +429,19 @@ mod tests {
     }
 
     #[test]
-    fn fmt__() {
+    fn fmt_() {
         assert_eq!("(R:0, G:0, B:0)", format!("{}", BLACK));
         assert_eq!("(R:255, G:255, B:255)", format!("{}", WHITE));
         assert_eq!("(R:0, G:255, B:0)", format!("{}", presets::GREEN));
     }
 
     #[test]
-    fn is_white__() {
+    fn is_white_() {
         assert!(WHITE.is_white())
     }
 
     #[test]
-    fn is_black__() {
+    fn is_black_() {
         assert!(BLACK.is_black())
     }
 }
