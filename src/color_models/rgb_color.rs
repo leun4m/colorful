@@ -1,4 +1,4 @@
-use crate::color_models::{utils, Color};
+use crate::color_models::{number_utils, Color};
 use std::fmt::{Display, Formatter, Result};
 
 /// Contains predefined colors
@@ -58,9 +58,9 @@ impl RGBColor {
     /// - Any values < 0 it will be treated as 0
     pub fn from_rgb_f64(r: f64, g: f64, b: f64) -> Self {
         RGBColor::from_rgb(
-            utils::save_convert_float_to_byte(r),
-            utils::save_convert_float_to_byte(g),
-            utils::save_convert_float_to_byte(b),
+            number_utils::save_convert_float_to_byte(r),
+            number_utils::save_convert_float_to_byte(g),
+            number_utils::save_convert_float_to_byte(b),
         )
     }
 

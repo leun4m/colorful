@@ -1,5 +1,5 @@
 use crate::color_models::rgb_color::RGBColor;
-use crate::color_models::{utils, Color};
+use crate::color_models::{number_utils, Color};
 
 /// Representation of a color_models stored as HSV channels.
 ///
@@ -40,12 +40,12 @@ impl HSVColor {
 impl From<RGBColor> for HSVColor {
     /// Converts `RGBColor` to a `HSVColor`
     fn from(rgb_color: RGBColor) -> Self {
-        let r = utils::as_float(rgb_color.red());
-        let g = utils::as_float(rgb_color.green());
-        let b = utils::as_float(rgb_color.blue());
+        let r = number_utils::as_float(rgb_color.red());
+        let g = number_utils::as_float(rgb_color.green());
+        let b = number_utils::as_float(rgb_color.blue());
 
-        let c_max = utils::get_max(r, g, b);
-        let c_min = utils::get_min(r, g, b);
+        let c_max = number_utils::get_max(r, g, b);
+        let c_min = number_utils::get_min(r, g, b);
         let delta = c_max - c_min;
 
         let hue = if delta == 0.0 {
@@ -79,9 +79,9 @@ impl PartialEq for HSVColor {
     fn eq(&self, other: &Self) -> bool {
         const EPSILON: f64 = 0.000_001;
         // Compare floating points
-        utils::approx_equal_f64(self.h, other.h, EPSILON)
-            && utils::approx_equal_f64(self.s, other.s, EPSILON)
-            && utils::approx_equal_f64(self.v, other.v, EPSILON)
+        number_utils::approx_equal_f64(self.h, other.h, EPSILON)
+            && number_utils::approx_equal_f64(self.s, other.s, EPSILON)
+            && number_utils::approx_equal_f64(self.v, other.v, EPSILON)
     }
 }
 

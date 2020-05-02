@@ -63,14 +63,13 @@ pub fn approx_equal_f64(a: f64, b: f64, epsilon: f64) -> bool {
     }
     // If both are finite
     else {
-        println!("{}", (a - b).abs());
         (a - b).abs() < epsilon
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::color_models::utils::approx_equal_f64;
+    use crate::color_models::number_utils::approx_equal_f64;
     use core::num::FpCategory::Infinite;
     use std::f64::{INFINITY, NAN};
 

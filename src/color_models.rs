@@ -3,7 +3,7 @@ pub mod hsv_color;
 /// A module for the RGB color model
 pub mod rgb_color;
 
-mod utils;
+mod number_utils;
 
 pub trait Color {
     /// Returns if color is (absolute) white
