@@ -1,5 +1,5 @@
 use crate::color_models::hsv::HSVColor;
-use crate::color_models::rgb24::RGB24;
+use crate::color_models::rgb::rgb24::RGB24;
 use crate::number_utils;
 
 /// Converts the given `RGBColor` to an `HSVColor`
@@ -31,7 +31,7 @@ pub fn rgb_to_hex(rgb_color: &RGB24) -> HSVColor {
 #[cfg(test)]
 mod tests {
     use crate::color_converter::rgb_to_hex;
-    use crate::color_models::rgb24::presets;
+    use crate::color_models::rgb::rgb24::presets;
 
     #[test]
     fn from_rgb() {

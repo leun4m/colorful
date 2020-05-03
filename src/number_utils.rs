@@ -1,4 +1,4 @@
-use crate::color_models::rgb24;
+use crate::color_models::rgb::rgb24;
 
 /// Calculates the maximum value of the given triple
 pub fn get_max(a: f64, b: f64, c: f64) -> f64 {

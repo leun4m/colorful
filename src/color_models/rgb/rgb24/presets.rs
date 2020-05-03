@@ -1,4 +1,4 @@
-use crate::color_models::rgb24::RGB24;
+use crate::color_models::rgb::rgb24::RGB24;
 
 /// Perfect white: `#fff`
 pub const WHITE: RGB24 = RGB24 {

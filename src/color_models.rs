@@ -2,8 +2,6 @@
 pub mod hsv;
 /// The RGB color model (custom color depth)
 pub mod rgb;
-/// The RGB (24-bit) color model
-pub mod rgb24;
 
 /// Collection of basic methods every color (regardless of model) should have
 pub trait Color {
