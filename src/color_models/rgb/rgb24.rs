@@ -1,5 +1,5 @@
 use crate::color_converter;
-use crate::color_models::hsv::HSVColor;
+use crate::color_models::hsv::HSV;
 use crate::color_models::rgb::RGB;
 use crate::color_models::Color;
 use crate::number_utils;

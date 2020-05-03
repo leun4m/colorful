@@ -1,9 +1,9 @@
-use crate::color_models::hsv::HSVColor;
+use crate::color_models::hsv::HSV;
 use crate::color_models::rgb::RGB;
 use crate::number_utils;
 
 /// Converts the given `RGBColor` to an `HSVColor`
-pub fn rgb_to_hsv<T>(rgb_color: &impl RGB<T>) -> HSVColor {
+pub fn rgb_to_hsv<T>(rgb_color: &impl RGB<T>) -> HSV {
     let (r, g, b) = rgb_color.as_tuple_f64();
 
     let c_max = number_utils::get_max(r, g, b);
@@ -23,7 +23,7 @@ pub fn rgb_to_hsv<T>(rgb_color: &impl RGB<T>) -> HSVColor {
     let saturation = if c_max > 0.0 { delta / c_max } else { 0.0 };
     let value = c_max;
 
-    HSVColor::from_hsv(hue, saturation, value)
+    HSV::from_hsv(hue, saturation, value)
 }
 
 #[cfg(test)]

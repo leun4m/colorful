@@ -1,14 +1,14 @@
 use crate::color_models::Color;
 use crate::number_utils;
 
-/// Representation of a color_models stored as HSV channels.
+/// Representation a HSV color
 ///
 /// Each channel is stored as `f64`
 ///
 /// - **H** in degrees (0.0 - 360.0)
 /// - **S/V** as fraction (0.0 - 1.0)
 #[derive(Debug)]
-pub struct HSVColor {
+pub struct HSV {
     h: f64,
     s: f64,
     v: f64,
@@ -17,15 +17,15 @@ pub struct HSVColor {
 /// Used for the precision of equality between to HSV Colors
 pub const EPSILON: f64 = 0.000_000_1;
 
-/// White as `HSVColor`
-pub const WHITE: HSVColor = HSVColor {
+/// 100% white
+pub const WHITE: HSV = HSV {
     h: 0.0,
     s: 0.0,
     v: 1.0,
 };
 
-/// Black as `HSVColor`
-pub const BLACK: HSVColor = HSVColor {
+/// 100% black
+pub const BLACK: HSV = HSV {
     h: 0.0,
     s: 0.0,
     v: 0.0,
@@ -44,12 +44,12 @@ pub const S_MAX: f64 = 1.0;
 /// The maximum for channel **value**
 pub const V_MAX: f64 = 1.0;
 
-impl HSVColor {
+impl HSV {
     /// Creates a new `HSVColor`, setting all values to zero
     ///
     /// This is *black*.
     pub fn new() -> Self {
-        HSVColor::from_hsv(0.0, 0.0, 0.0)
+        HSV::from_hsv(0.0, 0.0, 0.0)
     }
 
     /// Creates a new `HSVColor` from the given floating point values.
@@ -67,7 +67,7 @@ impl HSVColor {
             "At least one of the given values is NAN"
         );
 
-        HSVColor {
+        HSV {
             h: number_utils::convert_to_range(h, H_MIN, H_MAX),
             s: number_utils::convert_to_range(s, S_MIN, S_MAX),
             v: number_utils::convert_to_range(v, V_MIN, V_MAX),
@@ -84,7 +84,7 @@ impl HSVColor {
     /// - (51, 51, 51) => (72.0, 0.2, 0.2)
     ///
     pub fn from_hsv_u8(h: u8, s: u8, v: u8) -> Self {
-        HSVColor::from_hsv(
+        HSV::from_hsv(
             h as f64 / u8::MAX as f64 * H_MAX,
             s as f64 / u8::MAX as f64 * S_MAX,
             v as f64 / u8::MAX as f64 * V_MAX,
@@ -141,13 +141,13 @@ impl HSVColor {
     }
 }
 
-impl From<(f64, f64, f64)> for HSVColor {
+impl From<(f64, f64, f64)> for HSV {
     fn from(hsv: (f64, f64, f64)) -> Self {
-        HSVColor::from_hsv(hsv.0, hsv.1, hsv.2)
+        HSV::from_hsv(hsv.0, hsv.1, hsv.2)
     }
 }
 
-impl Color for HSVColor {
+impl Color for HSV {
     fn is_white(&self) -> bool {
         self == &WHITE
     }
@@ -157,7 +157,7 @@ impl Color for HSVColor {
     }
 }
 
-impl PartialEq for HSVColor {
+impl PartialEq for HSV {
     /// Checks if both colors are equal.
     ///
     /// Since this uses f64 it will check against [EPSILON](constant.EPSILON.html)
@@ -171,14 +171,12 @@ impl PartialEq for HSVColor {
 
 #[cfg(test)]
 mod tests {
-    use crate::color_models::hsv::{
-        HSVColor, BLACK, H_MAX, H_MIN, S_MAX, S_MIN, V_MAX, V_MIN, WHITE,
-    };
+    use crate::color_models::hsv::{BLACK, HSV, H_MAX, H_MIN, S_MAX, S_MIN, V_MAX, V_MIN, WHITE};
     use crate::color_models::Color;
 
     #[test]
     fn getter_setter() {
-        let mut color = HSVColor::new();
+        let mut color = HSV::new();
         assert_eq!(0.0, color.h());
         assert_eq!(0.0, color.s());
         assert_eq!(0.0, color.v());
@@ -193,32 +191,26 @@ mod tests {
     #[test]
     fn from_hsv_u8_works() {
         assert_eq!(
-            HSVColor::from_hsv(0.0, 0.0, 0.0),
-            HSVColor::from_hsv_u8(u8::MIN, u8::MIN, u8::MIN)
+            HSV::from_hsv(0.0, 0.0, 0.0),
+            HSV::from_hsv_u8(u8::MIN, u8::MIN, u8::MIN)
         );
+        assert_eq!(HSV::from_hsv(72.0, 0.2, 0.2), HSV::from_hsv_u8(51, 51, 51));
         assert_eq!(
-            HSVColor::from_hsv(72.0, 0.2, 0.2),
-            HSVColor::from_hsv_u8(51, 51, 51)
-        );
-        assert_eq!(
-            HSVColor::from_hsv(360.0, 1.0, 1.0),
-            HSVColor::from_hsv_u8(u8::MAX, u8::MAX, u8::MAX)
+            HSV::from_hsv(360.0, 1.0, 1.0),
+            HSV::from_hsv_u8(u8::MAX, u8::MAX, u8::MAX)
         );
     }
 
     #[test]
     fn as_tuple_u8_works() {
-        assert_eq!(
-            (0, 0, 0),
-            HSVColor::from_hsv(H_MIN, S_MIN, V_MIN).as_tuple_u8()
-        );
+        assert_eq!((0, 0, 0), HSV::from_hsv(H_MIN, S_MIN, V_MIN).as_tuple_u8());
         assert_eq!(
             (255, 255, 255),
-            HSVColor::from_hsv(H_MAX, S_MAX, V_MAX).as_tuple_u8()
+            HSV::from_hsv(H_MAX, S_MAX, V_MAX).as_tuple_u8()
         );
         assert_eq!(
             (127, 127, 51),
-            HSVColor::from_hsv(H_MAX / 2.0, S_MAX / 2.0, V_MAX / 5.0).as_tuple_u8()
+            HSV::from_hsv(H_MAX / 2.0, S_MAX / 2.0, V_MAX / 5.0).as_tuple_u8()
         );
     }
 
@@ -230,37 +222,34 @@ mod tests {
 
     #[test]
     fn from_f64_tuple() {
-        assert_eq!(
-            HSVColor::from_hsv(0.5, 0.8, 0.9),
-            HSVColor::from((0.5, 0.8, 0.9))
-        )
+        assert_eq!(HSV::from_hsv(0.5, 0.8, 0.9), HSV::from((0.5, 0.8, 0.9)))
     }
 
     #[test]
     #[should_panic]
     fn from_hsv_nan_panic() {
         println!("{}", f64::NAN);
-        HSVColor::from_hsv(f64::NAN, 1.0, 1.0);
+        HSV::from_hsv(f64::NAN, 1.0, 1.0);
     }
 
     #[test]
     fn from_hsv_value_transform() {
         assert_eq!(
-            HSVColor::from_hsv(H_MIN, S_MIN, V_MIN),
-            HSVColor::from_hsv(H_MIN - 1.0, S_MIN - 1.0, V_MIN - 1.0)
+            HSV::from_hsv(H_MIN, S_MIN, V_MIN),
+            HSV::from_hsv(H_MIN - 1.0, S_MIN - 1.0, V_MIN - 1.0)
         );
         assert_eq!(
-            HSVColor::from_hsv(H_MAX, S_MAX, V_MAX),
-            HSVColor::from_hsv(H_MAX + 1.0, S_MAX + 1.0, V_MAX + 1.0)
+            HSV::from_hsv(H_MAX, S_MAX, V_MAX),
+            HSV::from_hsv(H_MAX + 1.0, S_MAX + 1.0, V_MAX + 1.0)
         );
 
         assert_eq!(
-            HSVColor::from_hsv(H_MIN, S_MIN, V_MIN),
-            HSVColor::from_hsv(f64::NEG_INFINITY, f64::NEG_INFINITY, f64::NEG_INFINITY)
+            HSV::from_hsv(H_MIN, S_MIN, V_MIN),
+            HSV::from_hsv(f64::NEG_INFINITY, f64::NEG_INFINITY, f64::NEG_INFINITY)
         );
         assert_eq!(
-            HSVColor::from_hsv(H_MAX, S_MAX, V_MAX),
-            HSVColor::from_hsv(f64::INFINITY, f64::INFINITY, f64::INFINITY)
+            HSV::from_hsv(H_MAX, S_MAX, V_MAX),
+            HSV::from_hsv(f64::INFINITY, f64::INFINITY, f64::INFINITY)
         );
     }
 }
