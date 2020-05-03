@@ -1,4 +1,4 @@
-use crate::color_models::rgb;
+use crate::color_models::rgb24;
 
 /// Calculates the maximum value of the given triple
 pub fn get_max(a: f64, b: f64, c: f64) -> f64 {
@@ -12,7 +12,7 @@ pub fn get_min(a: f64, b: f64, c: f64) -> f64 {
 
 /// Converts *byte* to *float* representation
 pub fn as_float(a: u8) -> f64 {
-    a as f64 / rgb::CHANNEL_MAX as f64
+    a as f64 / rgb24::CHANNEL_MAX as f64
 }
 
 /// Converts *byte* to *float* representation

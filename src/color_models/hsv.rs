@@ -174,7 +174,7 @@ mod tests {
     use crate::color_models::hsv::{
         HSVColor, BLACK, H_MAX, H_MIN, S_MAX, S_MIN, V_MAX, V_MIN, WHITE,
     };
-    use crate::color_models::rgb::presets;
+    use crate::color_models::rgb24::presets;
     use crate::color_models::Color;
 
     #[test]

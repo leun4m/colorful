@@ -13,3 +13,13 @@ pub mod color_converter;
 
 /// Contains various util methods for the work with numbers
 mod number_utils;
+
+#[cfg(test)]
+mod tests {
+    use crate::color_models::rgb24::RGB24;
+
+    #[test]
+    fn rgb() {
+        let color = RGB24::from((0, 255, 127));
+    }
+}
