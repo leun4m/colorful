@@ -7,7 +7,7 @@ pub mod rgb48;
 ///
 /// Suitable for different color depths
 ///
-/// `T` is meant to be a numeric type
+/// `T` is meant to be the base type for each channel
 ///
 pub trait RGB<T> {
     /// Creates a new RGB color, setting all values to zero.

@@ -18,34 +18,34 @@ pub struct RGB24 {
     b: u8,
 }
 
-/// White as `RGB24`
+/// 100% white as `RGB24`
 pub const WHITE: RGB24 = RGB24 {
     r: u8::MAX,
     g: u8::MAX,
     b: u8::MAX,
 };
 
-/// Black as `RGB24`
+/// 100% black as `RGB24`
 pub const BLACK: RGB24 = RGB24 {
     r: u8::MIN,
     g: u8::MIN,
     b: u8::MIN,
 };
-/// The default red: `#f00`
+/// 100% red as `RGB24`
 pub const RED: RGB24 = RGB24 {
     r: u8::MAX,
     g: u8::MIN,
     b: u8::MIN,
 };
 
-/// The default green: `#0f0`
+/// 100% green as `RGB24`
 pub const GREEN: RGB24 = RGB24 {
     r: u8::MIN,
     g: u8::MAX,
     b: u8::MIN,
 };
 
-/// The default blue: `#00f`
+/// 100% blue as `RGB24`
 pub const BLUE: RGB24 = RGB24 {
     r: u8::MIN,
     g: u8::MIN,
@@ -185,7 +185,11 @@ impl RGB<u8> for RGB24 {
     }
 
     fn as_tuple_f64(&self) -> (f64, f64, f64) {
-        number_utils::as_float_tuple(self.as_tuple())
+        (
+            self.r as f64 / RGB24::max() as f64,
+            self.g as f64 / RGB24::max() as f64,
+            self.b as f64 / RGB24::max() as f64,
+        )
     }
 }
 

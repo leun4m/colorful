@@ -105,7 +105,11 @@ impl RGB<u16> for RGB48 {
     }
 
     fn as_tuple_f64(&self) -> (f64, f64, f64) {
-        number_utils::as_float_tuple_u16(self.as_tuple())
+        (
+            self.r as f64 / RGB48::max() as f64,
+            self.g as f64 / RGB48::max() as f64,
+            self.b as f64 / RGB48::max() as f64,
+        )
     }
 }
 
