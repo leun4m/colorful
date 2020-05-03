@@ -15,18 +15,39 @@ pub struct RGB48 {
     b: u16,
 }
 
-/// White as `RGB48`
+/// 100% White as `RGB48`
 pub const WHITE: RGB48 = RGB48 {
     r: u16::MAX,
     g: u16::MAX,
     b: u16::MAX,
 };
 
-/// Black as `RGB48`
+/// 100% Black as `RGB48`
 pub const BLACK: RGB48 = RGB48 {
     r: u16::MIN,
     g: u16::MIN,
     b: u16::MIN,
+};
+
+/// 100% Red as `RGB48`
+pub const RED: RGB48 = RGB48 {
+    r: u16::MAX,
+    g: u16::MIN,
+    b: u16::MIN,
+};
+
+/// 100% Green as `RGB48`
+pub const GREEN: RGB48 = RGB48 {
+    r: u16::MIN,
+    g: u16::MAX,
+    b: u16::MIN,
+};
+
+/// 100% Blue as `RGB48`
+pub const BLUE: RGB48 = RGB48 {
+    r: u16::MIN,
+    g: u16::MIN,
+    b: u16::MAX,
 };
 
 impl RGB48 {
