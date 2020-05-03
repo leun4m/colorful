@@ -51,25 +51,26 @@ pub fn rgb48_to_rgb24(rgb: &RGB48) -> RGB24 {
 #[cfg(test)]
 mod tests {
     use crate::color_converter::{rgb24_to_rgb48, rgb48_to_rgb24, rgb_to_hsv};
+    use crate::color_models::hsv;
     use crate::color_models::rgb::rgb24;
     use crate::color_models::rgb::rgb48;
 
     #[test]
     fn rgb_to_hsv_rgb24() {
-        assert_eq!((0.0, 0.0, 1.0), (rgb_to_hsv(&rgb24::WHITE)).as_tuple());
-        assert_eq!((0.0, 0.0, 0.0), (rgb_to_hsv(&rgb24::BLACK)).as_tuple());
-        assert_eq!((0.0, 1.0, 1.0), (rgb_to_hsv(&rgb24::RED)).as_tuple());
-        assert_eq!((120.0, 1.0, 1.0), (rgb_to_hsv(&rgb24::GREEN)).as_tuple());
-        assert_eq!((240.0, 1.0, 1.0), (rgb_to_hsv(&rgb24::BLUE)).as_tuple());
+        assert_eq!(hsv::WHITE, rgb_to_hsv(&rgb24::WHITE));
+        assert_eq!(hsv::BLACK, rgb_to_hsv(&rgb24::BLACK));
+        assert_eq!(hsv::RED, rgb_to_hsv(&rgb24::RED));
+        assert_eq!(hsv::GREEN, rgb_to_hsv(&rgb24::GREEN));
+        assert_eq!(hsv::BLUE, rgb_to_hsv(&rgb24::BLUE));
     }
 
     #[test]
     fn rgb_to_hsv_rgb48() {
-        assert_eq!((0.0, 0.0, 1.0), (rgb_to_hsv(&rgb48::WHITE)).as_tuple());
-        assert_eq!((0.0, 0.0, 0.0), (rgb_to_hsv(&rgb48::BLACK)).as_tuple());
-        assert_eq!((0.0, 1.0, 1.0), (rgb_to_hsv(&rgb48::RED)).as_tuple());
-        assert_eq!((120.0, 1.0, 1.0), (rgb_to_hsv(&rgb48::GREEN)).as_tuple());
-        assert_eq!((240.0, 1.0, 1.0), (rgb_to_hsv(&rgb48::BLUE)).as_tuple());
+        assert_eq!(hsv::WHITE, rgb_to_hsv(&rgb48::WHITE));
+        assert_eq!(hsv::BLACK, rgb_to_hsv(&rgb48::BLACK));
+        assert_eq!(hsv::RED, rgb_to_hsv(&rgb48::RED));
+        assert_eq!(hsv::GREEN, rgb_to_hsv(&rgb48::GREEN));
+        assert_eq!(hsv::BLUE, rgb_to_hsv(&rgb48::BLUE));
     }
 
     #[test]

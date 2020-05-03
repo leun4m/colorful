@@ -31,6 +31,27 @@ pub const BLACK: HSV = HSV {
     v: 0.0,
 };
 
+/// 100% red
+pub const RED: HSV = HSV {
+    h: 0.0,
+    s: 1.0,
+    v: 1.0,
+};
+
+/// 100% green
+pub const GREEN: HSV = HSV {
+    h: 120.0,
+    s: 1.0,
+    v: 1.0,
+};
+
+/// 100% blue
+pub const BLUE: HSV = HSV {
+    h: 240.0,
+    s: 1.0,
+    v: 1.0,
+};
+
 /// The minimum for channel **hue**
 pub const H_MIN: f64 = 0.0;
 /// The minimum for channel **saturation**
