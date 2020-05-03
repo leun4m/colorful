@@ -1,3 +1,5 @@
+use crate::color_converter;
+use crate::color_models::rgb::RGB;
 use crate::color_models::Color;
 use crate::number_utils;
 
@@ -129,6 +131,14 @@ impl HSV {
             (self.s / S_MAX * u8::MAX as f64) as u8,
             (self.v / V_MAX * u8::MAX as f64) as u8,
         )
+    }
+
+    /// Converts this to `RGB`
+    pub fn to_rgb<T, U>(&self) -> T
+    where
+        T: RGB<U>,
+    {
+        color_converter::hsv_to_rgb(self)
     }
 
     /// Returns value of channel **hue**

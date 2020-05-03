@@ -4,7 +4,7 @@ use crate::color_models::rgb::rgb48::RGB48;
 use crate::color_models::rgb::RGB;
 use crate::number_utils;
 
-/// Converts the given `RGBColor` to an `HSVColor`
+/// Converts the given `RGB` -> `HSV`
 pub fn rgb_to_hsv<T>(rgb_color: &impl RGB<T>) -> HSV {
     let (r, g, b) = rgb_color.as_tuple_f64();
 
@@ -28,6 +28,43 @@ pub fn rgb_to_hsv<T>(rgb_color: &impl RGB<T>) -> HSV {
     HSV::from_hsv(hue, saturation, value)
 }
 
+/// Converts the given `HSV` -> `RGB`
+///
+/// This uses the formula provided by [Wikipedia](https://en.wikipedia.org/wiki/HSL_and_HSV#HSV_to_RGB)
+/// (2020-05-03)
+pub fn hsv_to_rgb<T, U>(hsv: &HSV) -> T
+where
+    T: RGB<U>,
+{
+    let chroma = hsv.v() * hsv.s();
+    let h = hsv.h() / 60.0;
+    let x = chroma * (1.0 - (h % 2.0 - 1.0).abs());
+
+    let rgb = calc_hsv(h, chroma, x);
+    let m = hsv.v() - chroma;
+
+    T::from_rgb_f64(rgb.0 + m, rgb.1 + m, rgb.2 + m)
+}
+
+fn calc_hsv(h: f64, chroma: f64, x: f64) -> (f64, f64, f64) {
+    if h.is_nan() {
+        (0.0, 0.0, 0.0)
+    } else if 0.0 <= h && h <= 1.0 {
+        (chroma, x, 0.0)
+    } else if 1.0 < h && h <= 2.0 {
+        (x, chroma, 0.0)
+    } else if 2.0 < h && h <= 3.0 {
+        (0.0, chroma, x)
+    } else if 3.0 < h && h <= 4.0 {
+        (0.0, x, chroma)
+    } else if 4.0 < h && h <= 5.0 {
+        (x, 0.0, chroma)
+    } else if 5.0 < h && h <= 6.0 {
+        (chroma, 0.0, x)
+    } else {
+        (0.0, 0.0, 0.0)
+    }
+}
 /// Converts the given `RGB24` -> `RGB48`
 pub fn rgb24_to_rgb48(rgb: &RGB24) -> RGB48 {
     const FACTOR: u16 = RGB48::MAX / RGB24::MAX as u16;
@@ -50,9 +87,11 @@ pub fn rgb48_to_rgb24(rgb: &RGB48) -> RGB24 {
 
 #[cfg(test)]
 mod tests {
-    use crate::color_converter::{rgb24_to_rgb48, rgb48_to_rgb24, rgb_to_hsv};
+    use crate::color_converter::{hsv_to_rgb, rgb24_to_rgb48, rgb48_to_rgb24, rgb_to_hsv};
     use crate::color_models::hsv;
+    use crate::color_models::hsv::HSV;
     use crate::color_models::rgb::rgb24;
+    use crate::color_models::rgb::rgb24::RGB24;
     use crate::color_models::rgb::rgb48;
 
     #[test]
@@ -71,6 +110,29 @@ mod tests {
         assert_eq!(hsv::RED, rgb_to_hsv(&rgb48::RED));
         assert_eq!(hsv::GREEN, rgb_to_hsv(&rgb48::GREEN));
         assert_eq!(hsv::BLUE, rgb_to_hsv(&rgb48::BLUE));
+    }
+
+    #[test]
+    fn hsv_to_rgb_rgb24() {
+        assert_eq!(rgb24::WHITE, hsv_to_rgb(&hsv::WHITE));
+        assert_eq!(rgb24::BLACK, hsv_to_rgb(&hsv::BLACK));
+        assert_eq!(rgb24::RED, hsv_to_rgb(&hsv::RED));
+        assert_eq!(rgb24::GREEN, hsv_to_rgb(&hsv::GREEN));
+        assert_eq!(rgb24::BLUE, hsv_to_rgb(&hsv::BLUE));
+
+        assert_eq!(
+            RGB24::from((255, 0, 127)),
+            hsv_to_rgb(&HSV::from((330.0, 1.0, 1.0)))
+        )
+    }
+
+    #[test]
+    fn hsv_to_rgb_rgb48() {
+        assert_eq!(rgb48::WHITE, hsv_to_rgb(&hsv::WHITE));
+        assert_eq!(rgb48::BLACK, hsv_to_rgb(&hsv::BLACK));
+        assert_eq!(rgb48::RED, hsv_to_rgb(&hsv::RED));
+        assert_eq!(rgb48::GREEN, hsv_to_rgb(&hsv::GREEN));
+        assert_eq!(rgb48::BLUE, hsv_to_rgb(&hsv::BLUE));
     }
 
     #[test]

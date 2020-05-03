@@ -17,9 +17,13 @@ mod number_utils;
 #[cfg(test)]
 mod tests {
     use crate::color_models::rgb::rgb24::RGB24;
+    use crate::color_models::rgb::rgb48::RGB48;
+    use crate::color_models::rgb::RGB;
 
     #[test]
     fn rgb() {
-        let color = RGB24::from((0, 255, 127));
+        let color_a = RGB24::from((0, 255, 127));
+        let color_b = color_a.to_hsv().to_rgb();
+        assert_eq!(color_a, color_b);
     }
 }
