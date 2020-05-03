@@ -103,11 +103,6 @@ impl RGB24 {
         format!("{:03x}", sum)
     }
 
-    /// Converts `RGB24` to a `HSVColor`
-    pub fn to_hsv(&self) -> HSVColor {
-        color_converter::rgb_to_hex(&self)
-    }
-
     /// Converts an integer to the corresponding RGB Color
     ///
     /// **Important:** Works only for specific bases:

@@ -1,3 +1,6 @@
+use crate::color_converter;
+use crate::color_models::hsv::HSVColor;
+
 /// The RGB color model (24-bit)
 pub mod rgb24;
 /// The RGB color model (48-bit)
@@ -67,4 +70,9 @@ pub trait RGB<T> {
 
     /// Converts this to an RGB Tuple using fractions
     fn as_tuple_f64(&self) -> (f64, f64, f64);
+
+    /// Converts this to `HSV`
+    fn to_hsv(&self) -> HSVColor {
+        color_converter::rgb_to_hsv::<T>(&self)
+    }
 }
