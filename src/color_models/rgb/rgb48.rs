@@ -1,8 +1,9 @@
+use crate::color_models::rgb::RGB;
 use crate::color_models::Color;
 use crate::number_utils;
 use std::fmt::{Display, Formatter, Result};
 
-/// Representation of a color model stored as RGB channels.
+/// Representation of a color model stor as RGB channels.
 ///
 /// This is the most widespread variant of RGB called
 /// [True color (24-bit)](https://en.wikipedia.org/wiki/Color_depth#True_color_(24-bit))
@@ -50,36 +51,16 @@ pub const BLUE: RGB48 = RGB48 {
     b: u16::MAX,
 };
 
-impl RGB48 {
-    /// Creates a new `RGB48`, setting all values to zero.
-    ///
-    /// This is *black*.
-    pub fn new() -> Self {
+impl RGB<u16> for RGB48 {
+    fn new() -> Self {
         RGB48::from_rgb(0, 0, 0)
     }
 
-    /// Creates a new `RGB48` from the given integer values.
-    ///
-    /// # Arguments
-    /// - `r`: red
-    /// - `g`: green    
-    /// - `b`: blue
-    pub fn from_rgb(r: u16, g: u16, b: u16) -> Self {
+    fn from_rgb(r: u16, g: u16, b: u16) -> Self {
         RGB48 { r, g, b }
     }
 
-    /// Creates a new `RGB48` from the given floating point values.
-    ///
-    /// # Arguments
-    /// - `r`: red
-    /// - `g`: green
-    /// - `b`: blue
-    ///
-    /// # Please note
-    /// Expects values from 0.0 to 1.0 (both inclusive)
-    /// - Any values > 1 will be treated as 1
-    /// - Any values < 0 it will be treated as 0
-    pub fn from_rgb_f64(r: f64, g: f64, b: f64) -> Self {
+    fn from_rgb_f64(r: f64, g: f64, b: f64) -> Self {
         RGB48::from_rgb(
             number_utils::to_u16_repr(r),
             number_utils::to_u16_repr(g),
@@ -87,43 +68,43 @@ impl RGB48 {
         )
     }
 
-    /// Returns the value of channel red
-    pub fn red(&self) -> u16 {
+    fn r(&self) -> u16 {
         self.r
     }
 
-    /// Returns the value of channel green
-    pub fn green(&self) -> u16 {
+    fn g(&self) -> u16 {
         self.g
     }
 
-    /// Returns the value of channel blue
-    pub fn blue(&self) -> u16 {
+    fn b(&self) -> u16 {
         self.b
     }
 
-    /// Sets the value of channel red
-    pub fn set_red(&mut self, r: u16) {
-        self.r = r
+    fn set_r(&mut self, r: u16) {
+        self.r = r;
     }
 
-    /// Sets the value of channel green
-    pub fn set_green(&mut self, g: u16) {
-        self.g = g
+    fn set_g(&mut self, g: u16) {
+        self.g = g;
     }
 
-    /// Sets the value of channel blue
-    pub fn set_blue(&mut self, b: u16) {
-        self.b = b
+    fn set_b(&mut self, b: u16) {
+        self.b = b;
     }
 
-    /// Converts `RGB48` to an RGB Tuple
-    pub fn as_tuple(&self) -> (u16, u16, u16) {
+    fn min() -> u16 {
+        u16::MIN
+    }
+
+    fn max() -> u16 {
+        u16::MAX
+    }
+
+    fn as_tuple(&self) -> (u16, u16, u16) {
         (self.r, self.g, self.b)
     }
 
-    /// Converts `RGB48` to an RGB Tuple using fractions
-    pub fn as_tuple_f64(&self) -> (f64, f64, f64) {
+    fn as_tuple_f64(&self) -> (f64, f64, f64) {
         number_utils::as_float_tuple_u16(self.as_tuple())
     }
 }
@@ -178,33 +159,33 @@ mod tests {
     }
 
     #[test]
-    fn set_red_() {
+    fn set_r_() {
         let mut color = RGB48::new();
-        assert_eq!(0, color.red());
-        color.set_red(3);
-        assert_eq!(3, color.red());
-        assert_eq!(0, color.green());
-        assert_eq!(0, color.blue());
+        assert_eq!(0, color.r());
+        color.set_r(3);
+        assert_eq!(3, color.r());
+        assert_eq!(0, color.g());
+        assert_eq!(0, color.b());
     }
 
     #[test]
-    fn set_green_() {
+    fn set_g_() {
         let mut color = RGB48::new();
-        assert_eq!(0, color.green());
-        color.set_green(42);
-        assert_eq!(0, color.red());
-        assert_eq!(42, color.green());
-        assert_eq!(0, color.blue());
+        assert_eq!(0, color.g());
+        color.set_g(42);
+        assert_eq!(0, color.r());
+        assert_eq!(42, color.g());
+        assert_eq!(0, color.b());
     }
 
     #[test]
-    fn set_blue_() {
+    fn set_b_() {
         let mut color = RGB48::new();
-        assert_eq!(0, color.blue());
-        color.set_blue(127);
-        assert_eq!(0, color.red());
-        assert_eq!(0, color.green());
-        assert_eq!(127, color.blue());
+        assert_eq!(0, color.b());
+        color.set_b(127);
+        assert_eq!(0, color.r());
+        assert_eq!(0, color.g());
+        assert_eq!(127, color.b());
     }
 
     #[test]

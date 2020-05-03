@@ -1,11 +1,9 @@
 use crate::color_converter;
 use crate::color_models::hsv::HSVColor;
+use crate::color_models::rgb::RGB;
 use crate::color_models::Color;
 use crate::number_utils;
 use std::fmt::{Display, Formatter, Result};
-
-/// Contains predefined colors
-pub mod presets;
 
 /// Representation of a color model stored as RGB channels.
 ///
@@ -19,9 +17,6 @@ pub struct RGB24 {
     g: u8,
     b: u8,
 }
-
-/// The maximum value for each channel
-pub const CHANNEL_MAX: u32 = 255;
 
 /// White as `RGB24`
 pub const WHITE: RGB24 = RGB24 {
@@ -58,42 +53,6 @@ pub const BLUE: RGB24 = RGB24 {
 };
 
 impl RGB24 {
-    /// Creates a new `RGB24`, setting all values to zero.
-    ///
-    /// This is *black*.
-    pub fn new() -> Self {
-        RGB24::from_rgb(0, 0, 0)
-    }
-
-    /// Creates a new `RGB24` from the given integer values.
-    ///
-    /// # Arguments
-    /// - `r`: red
-    /// - `g`: green    
-    /// - `b`: blue
-    pub fn from_rgb(r: u8, g: u8, b: u8) -> Self {
-        RGB24 { r, g, b }
-    }
-
-    /// Creates a new `RGB24` from the given floating point values.
-    ///
-    /// # Arguments
-    /// - `r`: red
-    /// - `g`: green
-    /// - `b`: blue
-    ///
-    /// # Please note
-    /// Expects values from 0.0 to 1.0 (both inclusive)
-    /// - Any values > 1 will be treated as 1
-    /// - Any values < 0 it will be treated as 0
-    pub fn from_rgb_f64(r: f64, g: f64, b: f64) -> Self {
-        RGB24::from_rgb(
-            number_utils::to_u8_repr(r),
-            number_utils::to_u8_repr(g),
-            number_utils::to_u8_repr(b),
-        )
-    }
-
     /// Creates a new `RGB24` from the given hex string.
     ///
     /// # Arguments
@@ -121,46 +80,6 @@ impl RGB24 {
         }
     }
 
-    /// Returns the value of channel red
-    pub fn red(&self) -> u8 {
-        self.r
-    }
-
-    /// Returns the value of channel green
-    pub fn green(&self) -> u8 {
-        self.g
-    }
-
-    /// Returns the value of channel blue
-    pub fn blue(&self) -> u8 {
-        self.b
-    }
-
-    /// Sets the value of channel red
-    pub fn set_red(&mut self, r: u8) {
-        self.r = r
-    }
-
-    /// Sets the value of channel green
-    pub fn set_green(&mut self, g: u8) {
-        self.g = g
-    }
-
-    /// Sets the value of channel blue
-    pub fn set_blue(&mut self, b: u8) {
-        self.b = b
-    }
-
-    /// Converts `RGB24` to an RGB Tuple
-    pub fn as_tuple(&self) -> (u8, u8, u8) {
-        (self.r, self.g, self.b)
-    }
-
-    /// Converts `RGB24` to an RGB Tuple using fractions
-    pub fn as_tuple_f64(&self) -> (f64, f64, f64) {
-        number_utils::as_float_tuple(self.as_tuple())
-    }
-
     /// Converts `RGB24` to a `HEX` String (6 digits)
     ///
     /// e.g. white => `"ffffff"`
@@ -176,9 +95,9 @@ impl RGB24 {
     /// **Warning:** This is a *lossy* compression.
     /// It will round to the nearest value
     pub fn to_hex_short(&self) -> String {
-        let r = (self.r as f64 / CHANNEL_MAX as f64 * 15 as f64).round() as u32;
-        let g = (self.g as f64 / CHANNEL_MAX as f64 * 15 as f64).round() as u32;
-        let b = (self.b as f64 / CHANNEL_MAX as f64 * 15 as f64).round() as u32;
+        let r = (self.r as f64 / RGB24::max() as f64 * 15 as f64).round() as u32;
+        let g = (self.g as f64 / RGB24::max() as f64 * 15 as f64).round() as u32;
+        let b = (self.b as f64 / RGB24::max() as f64 * 15 as f64).round() as u32;
 
         let sum: u32 = (r << 8) + (g << 4) + b;
         format!("{:03x}", sum)
@@ -203,7 +122,7 @@ impl RGB24 {
             base
         );
 
-        let factor = CHANNEL_MAX / (base - 1);
+        let factor = RGB24::max() as u32 / (base - 1);
         let bit_move = (base as f64).log2() as u32;
 
         let b = ((value % base) * factor) as u8;
@@ -213,6 +132,60 @@ impl RGB24 {
         let r = ((value % base) * factor) as u8;
 
         RGB24::from_rgb(r, g, b)
+    }
+}
+
+impl RGB<u8> for RGB24 {
+    fn new() -> Self {
+        RGB24::from_rgb(0, 0, 0)
+    }
+
+    fn from_rgb(r: u8, g: u8, b: u8) -> Self {
+        RGB24 { r, g, b }
+    }
+
+    fn from_rgb_f64(r: f64, g: f64, b: f64) -> Self {
+        RGB24::from_rgb(
+            number_utils::to_u8_repr(r),
+            number_utils::to_u8_repr(g),
+            number_utils::to_u8_repr(b),
+        )
+    }
+
+    fn r(&self) -> u8 {
+        self.r
+    }
+
+    fn g(&self) -> u8 {
+        self.g
+    }
+
+    fn b(&self) -> u8 {
+        self.b
+    }
+
+    fn set_r(&mut self, r: u8) {
+        self.r = r
+    }
+
+    fn set_g(&mut self, g: u8) {
+        self.g = g
+    }
+
+    fn set_b(&mut self, b: u8) {
+        self.b = b
+    }
+
+    fn min() -> u8 {
+        u8::MIN
+    }
+
+    fn max() -> u8 {
+        u8::MAX
+    }
+
+    fn as_tuple_f64(&self) -> (f64, f64, f64) {
+        number_utils::as_float_tuple(self.as_tuple())
     }
 }
 
@@ -268,31 +241,31 @@ mod tests {
     #[test]
     fn set_red_() {
         let mut color = RGB24::new();
-        assert_eq!(0, color.red());
-        color.set_red(3);
-        assert_eq!(3, color.red());
-        assert_eq!(0, color.green());
-        assert_eq!(0, color.blue());
+        assert_eq!(0, color.r());
+        color.set_r(3);
+        assert_eq!(3, color.r());
+        assert_eq!(0, color.g());
+        assert_eq!(0, color.b());
     }
 
     #[test]
     fn set_green_() {
         let mut color = RGB24::new();
-        assert_eq!(0, color.green());
-        color.set_green(42);
-        assert_eq!(0, color.red());
-        assert_eq!(42, color.green());
-        assert_eq!(0, color.blue());
+        assert_eq!(0, color.g());
+        color.set_g(42);
+        assert_eq!(0, color.r());
+        assert_eq!(42, color.g());
+        assert_eq!(0, color.b());
     }
 
     #[test]
     fn set_blue_() {
         let mut color = RGB24::new();
-        assert_eq!(0, color.blue());
-        color.set_blue(127);
-        assert_eq!(0, color.red());
-        assert_eq!(0, color.green());
-        assert_eq!(127, color.blue());
+        assert_eq!(0, color.b());
+        color.set_b(127);
+        assert_eq!(0, color.r());
+        assert_eq!(0, color.g());
+        assert_eq!(127, color.b());
     }
 
     #[test]
@@ -323,11 +296,11 @@ mod tests {
 
     #[test]
     fn from_hex_h6_presets() {
-        assert_eq!(presets::WHITE, RGB24::from_hex("ffffff"));
-        assert_eq!(presets::BLACK, RGB24::from_hex("000000"));
-        assert_eq!(presets::RED, RGB24::from_hex("ff0000"));
-        assert_eq!(presets::GREEN, RGB24::from_hex("00ff00"));
-        assert_eq!(presets::BLUE, RGB24::from_hex("0000ff"));
+        assert_eq!(WHITE, RGB24::from_hex("ffffff"));
+        assert_eq!(BLACK, RGB24::from_hex("000000"));
+        assert_eq!(RED, RGB24::from_hex("ff0000"));
+        assert_eq!(GREEN, RGB24::from_hex("00ff00"));
+        assert_eq!(BLUE, RGB24::from_hex("0000ff"));
     }
 
     #[test]
@@ -357,11 +330,11 @@ mod tests {
 
     #[test]
     fn from_hex_h3_presets() {
-        assert_eq!(presets::WHITE, RGB24::from_hex("fff"));
-        assert_eq!(presets::BLACK, RGB24::from_hex("000"));
-        assert_eq!(presets::RED, RGB24::from_hex("f00"));
-        assert_eq!(presets::GREEN, RGB24::from_hex("0f0"));
-        assert_eq!(presets::BLUE, RGB24::from_hex("00f"));
+        assert_eq!(WHITE, RGB24::from_hex("fff"));
+        assert_eq!(BLACK, RGB24::from_hex("000"));
+        assert_eq!(RED, RGB24::from_hex("f00"));
+        assert_eq!(GREEN, RGB24::from_hex("0f0"));
+        assert_eq!(BLUE, RGB24::from_hex("00f"));
     }
 
     #[test]
@@ -404,8 +377,8 @@ mod tests {
 
     #[test]
     fn to_rgb_tuple_presets() {
-        assert_eq!((255, 255, 255), presets::WHITE.as_tuple());
-        assert_eq!((0, 0, 0), presets::BLACK.as_tuple());
+        assert_eq!((255, 255, 255), WHITE.as_tuple());
+        assert_eq!((0, 0, 0), BLACK.as_tuple());
     }
 
     #[test]
@@ -417,11 +390,11 @@ mod tests {
 
     #[test]
     fn to_hex_presets() {
-        assert_eq!("ffffff", presets::WHITE.to_hex());
-        assert_eq!("000000", presets::BLACK.to_hex());
-        assert_eq!("ff0000", presets::RED.to_hex());
-        assert_eq!("00ff00", presets::GREEN.to_hex());
-        assert_eq!("0000ff", presets::BLUE.to_hex());
+        assert_eq!("ffffff", WHITE.to_hex());
+        assert_eq!("000000", BLACK.to_hex());
+        assert_eq!("ff0000", RED.to_hex());
+        assert_eq!("00ff00", GREEN.to_hex());
+        assert_eq!("0000ff", BLUE.to_hex());
     }
 
     #[test]
@@ -433,11 +406,11 @@ mod tests {
 
     #[test]
     fn to_hex_short_presets() {
-        assert_eq!("fff", presets::WHITE.to_hex_short());
-        assert_eq!("000", presets::BLACK.to_hex_short());
-        assert_eq!("f00", presets::RED.to_hex_short());
-        assert_eq!("0f0", presets::GREEN.to_hex_short());
-        assert_eq!("00f", presets::BLUE.to_hex_short());
+        assert_eq!("fff", WHITE.to_hex_short());
+        assert_eq!("000", BLACK.to_hex_short());
+        assert_eq!("f00", RED.to_hex_short());
+        assert_eq!("0f0", GREEN.to_hex_short());
+        assert_eq!("00f", BLUE.to_hex_short());
     }
 
     #[test]
@@ -459,7 +432,7 @@ mod tests {
     fn fmt_() {
         assert_eq!("(R:0, G:0, B:0)", format!("{}", BLACK));
         assert_eq!("(R:255, G:255, B:255)", format!("{}", WHITE));
-        assert_eq!("(R:0, G:255, B:0)", format!("{}", presets::GREEN));
+        assert_eq!("(R:0, G:255, B:0)", format!("{}", GREEN));
     }
 
     #[test]

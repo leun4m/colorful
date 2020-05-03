@@ -1,12 +1,13 @@
 use crate::color_models::hsv::HSVColor;
 use crate::color_models::rgb::rgb24::RGB24;
+use crate::color_models::rgb::RGB;
 use crate::number_utils;
 
 /// Converts the given `RGBColor` to an `HSVColor`
 pub fn rgb_to_hex(rgb_color: &RGB24) -> HSVColor {
-    let r = number_utils::as_float(rgb_color.red());
-    let g = number_utils::as_float(rgb_color.green());
-    let b = number_utils::as_float(rgb_color.blue());
+    let r = number_utils::as_float(rgb_color.r());
+    let g = number_utils::as_float(rgb_color.g());
+    let b = number_utils::as_float(rgb_color.b());
 
     let c_max = number_utils::get_max(r, g, b);
     let c_min = number_utils::get_min(r, g, b);
@@ -31,14 +32,14 @@ pub fn rgb_to_hex(rgb_color: &RGB24) -> HSVColor {
 #[cfg(test)]
 mod tests {
     use crate::color_converter::rgb_to_hex;
-    use crate::color_models::rgb::rgb24::presets;
+    use crate::color_models::rgb::rgb24::{BLACK, BLUE, GREEN, RED, WHITE};
 
     #[test]
     fn from_rgb() {
-        assert_eq!((0.0, 0.0, 1.0), (rgb_to_hex(&presets::WHITE)).as_tuple());
-        assert_eq!((0.0, 0.0, 0.0), (rgb_to_hex(&presets::BLACK)).as_tuple());
-        assert_eq!((0.0, 1.0, 1.0), (rgb_to_hex(&presets::RED)).as_tuple());
-        assert_eq!((120.0, 1.0, 1.0), (rgb_to_hex(&presets::GREEN)).as_tuple());
-        assert_eq!((240.0, 1.0, 1.0), (rgb_to_hex(&presets::BLUE)).as_tuple());
+        assert_eq!((0.0, 0.0, 1.0), (rgb_to_hex(&WHITE)).as_tuple());
+        assert_eq!((0.0, 0.0, 0.0), (rgb_to_hex(&BLACK)).as_tuple());
+        assert_eq!((0.0, 1.0, 1.0), (rgb_to_hex(&RED)).as_tuple());
+        assert_eq!((120.0, 1.0, 1.0), (rgb_to_hex(&GREEN)).as_tuple());
+        assert_eq!((240.0, 1.0, 1.0), (rgb_to_hex(&BLUE)).as_tuple());
     }
 }
