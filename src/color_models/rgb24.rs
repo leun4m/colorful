@@ -23,21 +23,21 @@ pub struct RGB24 {
 /// The maximum value for each channel
 pub const CHANNEL_MAX: u32 = 255;
 
-/// White as `RGBColor`
+/// White as `RGB24`
 pub const WHITE: RGB24 = presets::WHITE;
 
-/// Black as `RGBColor`
+/// Black as `RGB24`
 pub const BLACK: RGB24 = presets::BLACK;
 
 impl RGB24 {
-    /// Creates a new `RGBColor`, setting all values to zero.
+    /// Creates a new `RGB24`, setting all values to zero.
     ///
     /// This is *black*.
     pub fn new() -> Self {
         RGB24::from_rgb(0, 0, 0)
     }
 
-    /// Creates a new `RGBColor` from the given integer values.
+    /// Creates a new `RGB24` from the given integer values.
     ///
     /// # Arguments
     /// - `r`: red
@@ -47,7 +47,7 @@ impl RGB24 {
         RGB24 { r, g, b }
     }
 
-    /// Creates a new `RGBColor` from the given floating point values.
+    /// Creates a new `RGB24` from the given floating point values.
     ///
     /// # Arguments
     /// - `r`: red
@@ -66,7 +66,7 @@ impl RGB24 {
         )
     }
 
-    /// Creates a new `RGBColor` from the given hex string.
+    /// Creates a new `RGB24` from the given hex string.
     ///
     /// # Arguments
     /// - `hex`: the hexadecimal string to be converted
@@ -123,17 +123,17 @@ impl RGB24 {
         self.b = b
     }
 
-    /// Converts `RGBColor` to an RGB Tuple
+    /// Converts `RGB24` to an RGB Tuple
     pub fn as_tuple(&self) -> (u8, u8, u8) {
         (self.r, self.g, self.b)
     }
 
-    /// Converts `RGBColor` to an RGB Tuple using fractions
+    /// Converts `RGB24` to an RGB Tuple using fractions
     pub fn as_tuple_f64(&self) -> (f64, f64, f64) {
         number_utils::as_float_tuple(self.as_tuple())
     }
 
-    /// Converts `RGBColor` to a `HEX` String (6 digits)
+    /// Converts `RGB24` to a `HEX` String (6 digits)
     ///
     /// e.g. white => `"ffffff"`
     pub fn to_hex(&self) -> String {
@@ -141,7 +141,7 @@ impl RGB24 {
         format!("{:06x}", sum)
     }
 
-    /// Converts `RGBColor` to a 3 digit `HEX` String
+    /// Converts `RGB24` to a 3 digit `HEX` String
     ///
     /// e.g. white => `"fff"`
     ///
@@ -156,7 +156,7 @@ impl RGB24 {
         format!("{:03x}", sum)
     }
 
-    /// Converts `RGBColor` to a `HSVColor`
+    /// Converts `RGB24` to a `HSVColor`
     pub fn to_hsv(&self) -> HSVColor {
         color_converter::rgb_to_hex(&self)
     }
@@ -189,7 +189,7 @@ impl RGB24 {
 }
 
 impl From<(u8, u8, u8)> for RGB24 {
-    /// Creates a new `RGBColor` from the given tuple.
+    /// Creates a new `RGB24` from the given tuple.
     ///
     /// Works similar to [from_rgb](#method.from_rgb)
     fn from(rgb: (u8, u8, u8)) -> Self {
@@ -198,7 +198,7 @@ impl From<(u8, u8, u8)> for RGB24 {
 }
 
 impl From<(f64, f64, f64)> for RGB24 {
-    /// Creates a new `RGBColor` from the given tuple of floating point values
+    /// Creates a new `RGB24` from the given tuple of floating point values
     ///
     /// Works similar to [from_rgb_f64](#method.from_rgb_f64)
     fn from(rgb: (f64, f64, f64)) -> Self {
