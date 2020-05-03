@@ -13,6 +13,12 @@ pub mod rgb48;
 /// `T` is meant to be the base type for each channel
 ///
 pub trait RGB<T> {
+    /// The minimal value for a channel (0%)
+    const MIN: T;
+
+    /// The maximal value for a channel (100%)
+    const MAX: T;
+
     /// Creates a new RGB color, setting all values to zero.
     ///
     /// This is *black*.
@@ -57,12 +63,6 @@ pub trait RGB<T> {
     /// Sets the value of channel **B** (blue)
     fn set_b(&mut self, b: T);
 
-    /// The minimal value for a channel (0%)
-    fn min() -> T;
-
-    /// The maximal value for a channel (100%)
-    fn max() -> T;
-
     /// Converts this to an RGB triplet
     fn as_tuple(&self) -> (T, T, T) {
         (self.r(), self.g(), self.b())
@@ -72,7 +72,5 @@ pub trait RGB<T> {
     fn as_tuple_f64(&self) -> (f64, f64, f64);
 
     /// Converts this to `HSV`
-    fn to_hsv(&self) -> HSV {
-        color_converter::rgb_to_hsv::<T>(&self)
-    }
+    fn to_hsv(&self) -> HSV;
 }

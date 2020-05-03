@@ -1,9 +1,10 @@
+use crate::color_models::hsv::HSV;
 use crate::color_models::rgb::RGB;
 use crate::color_models::Color;
-use crate::number_utils;
+use crate::{color_converter, number_utils};
 use std::fmt::{Display, Formatter, Result};
 
-/// Representation of a color model stor as RGB channels.
+/// Representation of a color model stored as RGB channels.
 ///
 /// This is the most widespread variant of RGB called
 /// [True color (24-bit)](https://en.wikipedia.org/wiki/Color_depth#True_color_(24-bit))
@@ -52,6 +53,10 @@ pub const BLUE: RGB48 = RGB48 {
 };
 
 impl RGB<u16> for RGB48 {
+    const MIN: u16 = u16::MIN;
+
+    const MAX: u16 = u16::MAX;
+
     fn new() -> Self {
         RGB48::from_rgb(0, 0, 0)
     }
@@ -92,24 +97,19 @@ impl RGB<u16> for RGB48 {
         self.b = b;
     }
 
-    fn min() -> u16 {
-        u16::MIN
-    }
-
-    fn max() -> u16 {
-        u16::MAX
-    }
-
     fn as_tuple(&self) -> (u16, u16, u16) {
         (self.r, self.g, self.b)
     }
 
     fn as_tuple_f64(&self) -> (f64, f64, f64) {
         (
-            self.r as f64 / RGB48::max() as f64,
-            self.g as f64 / RGB48::max() as f64,
-            self.b as f64 / RGB48::max() as f64,
+            self.r as f64 / RGB48::MAX as f64,
+            self.g as f64 / RGB48::MAX as f64,
+            self.b as f64 / RGB48::MAX as f64,
         )
+    }
+    fn to_hsv(&self) -> HSV {
+        color_converter::rgb_to_hsv(self)
     }
 }
 

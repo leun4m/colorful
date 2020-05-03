@@ -95,9 +95,9 @@ impl RGB24 {
     /// **Warning:** This is a *lossy* compression.
     /// It will round to the nearest value
     pub fn to_hex_short(&self) -> String {
-        let r = (self.r as f64 / RGB24::max() as f64 * 15 as f64).round() as u32;
-        let g = (self.g as f64 / RGB24::max() as f64 * 15 as f64).round() as u32;
-        let b = (self.b as f64 / RGB24::max() as f64 * 15 as f64).round() as u32;
+        let r = (self.r as f64 / RGB24::MAX as f64 * 15 as f64).round() as u32;
+        let g = (self.g as f64 / RGB24::MAX as f64 * 15 as f64).round() as u32;
+        let b = (self.b as f64 / RGB24::MAX as f64 * 15 as f64).round() as u32;
 
         let sum: u32 = (r << 8) + (g << 4) + b;
         format!("{:03x}", sum)
@@ -117,7 +117,7 @@ impl RGB24 {
             base
         );
 
-        let factor = RGB24::max() as u32 / (base - 1);
+        let factor = RGB24::MAX as u32 / (base - 1);
         let bit_move = (base as f64).log2() as u32;
 
         let b = ((value % base) * factor) as u8;
@@ -131,6 +131,10 @@ impl RGB24 {
 }
 
 impl RGB<u8> for RGB24 {
+    const MIN: u8 = u8::MIN;
+
+    const MAX: u8 = u8::MAX;
+
     fn new() -> Self {
         RGB24::from_rgb(0, 0, 0)
     }
@@ -166,25 +170,20 @@ impl RGB<u8> for RGB24 {
     fn set_g(&mut self, g: u8) {
         self.g = g
     }
-
     fn set_b(&mut self, b: u8) {
         self.b = b
     }
 
-    fn min() -> u8 {
-        u8::MIN
-    }
-
-    fn max() -> u8 {
-        u8::MAX
-    }
-
     fn as_tuple_f64(&self) -> (f64, f64, f64) {
         (
-            self.r as f64 / RGB24::max() as f64,
-            self.g as f64 / RGB24::max() as f64,
-            self.b as f64 / RGB24::max() as f64,
+            self.r as f64 / RGB24::MAX as f64,
+            self.g as f64 / RGB24::MAX as f64,
+            self.b as f64 / RGB24::MAX as f64,
         )
+    }
+
+    fn to_hsv(&self) -> HSV {
+        color_converter::rgb_to_hsv(self)
     }
 }
 
