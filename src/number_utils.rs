@@ -1,5 +1,3 @@
-use crate::color_models::rgb::rgb24;
-
 /// Calculates the maximum value of the given triple
 pub fn get_max(a: f64, b: f64, c: f64) -> f64 {
     a.max(b.max(c))
@@ -12,7 +10,12 @@ pub fn get_min(a: f64, b: f64, c: f64) -> f64 {
 
 /// Converts *byte* to *float* representation
 pub fn as_float(a: u8) -> f64 {
-    a as f64 / rgb24::CHANNEL_MAX as f64
+    a as f64 / u8::MAX as f64
+}
+
+/// Converts *byte* to *float* representation
+pub fn as_float_u16(a: u16) -> f64 {
+    a as f64 / u16::MAX as f64
 }
 
 /// Converts *byte* to *float* representation
@@ -20,20 +23,46 @@ pub fn as_float_tuple(abc: (u8, u8, u8)) -> (f64, f64, f64) {
     (as_float(abc.0), as_float(abc.1), as_float(abc.2))
 }
 
-/// Converts a float to a byte
+/// Converts *byte* to *float* representation
+pub fn as_float_tuple_u16(abc: (u16, u16, u16)) -> (f64, f64, f64) {
+    (
+        as_float_u16(abc.0),
+        as_float_u16(abc.1),
+        as_float_u16(abc.2),
+    )
+}
+
+/// Maps `f64` to `u8`
 ///
 /// # Expects
 /// - values as fractions from 0.0 to 1.0
 /// - values > 1 will be treated as 1
 /// - values < 0 will be treated as 0
 /// - NAN => 0
-pub fn to_byte_repr(float: f64) -> u8 {
+pub fn to_u8_repr(float: f64) -> u8 {
     if float >= 1.0 {
         u8::MAX
     } else if float <= 0.0 {
         0
     } else {
         (float * u8::MAX as f64) as u8
+    }
+}
+
+/// Maps `f64` to `u16`
+///
+/// # Expects
+/// - values as fractions from 0.0 to 1.0
+/// - values > 1 will be treated as 1
+/// - values < 0 will be treated as 0
+/// - NAN => 0
+pub fn to_u16_repr(float: f64) -> u16 {
+    if float >= 1.0 {
+        u16::MAX
+    } else if float <= 0.0 {
+        0
+    } else {
+        (float * u16::MAX as f64) as u16
     }
 }
 
@@ -89,7 +118,7 @@ pub fn convert_to_range(a: f64, min: f64, max: f64) -> f64 {
 
 #[cfg(test)]
 mod tests {
-    use crate::number_utils::{approx_equal_f64, as_float, get_max, get_min, to_byte_repr};
+    use crate::number_utils::{approx_equal_f64, as_float, get_max, get_min, to_u8_repr};
 
     #[test]
     fn approx_equal_f64_nan_nan() {
@@ -217,33 +246,33 @@ mod tests {
 
     #[test]
     fn save_convert_float_to_byte_normal() {
-        assert_eq!(0, to_byte_repr(0.0));
-        assert_eq!(51, to_byte_repr(0.2));
-        assert_eq!(127, to_byte_repr(0.5));
-        assert_eq!(255, to_byte_repr(1.0));
+        assert_eq!(0, to_u8_repr(0.0));
+        assert_eq!(51, to_u8_repr(0.2));
+        assert_eq!(127, to_u8_repr(0.5));
+        assert_eq!(255, to_u8_repr(1.0));
     }
 
     #[test]
     fn save_convert_float_to_byte_lower_zero() {
-        assert_eq!(0, to_byte_repr(-0.0));
-        assert_eq!(0, to_byte_repr(-0.1));
-        assert_eq!(0, to_byte_repr(-12.5));
-        assert_eq!(0, to_byte_repr(-1124.0));
+        assert_eq!(0, to_u8_repr(-0.0));
+        assert_eq!(0, to_u8_repr(-0.1));
+        assert_eq!(0, to_u8_repr(-12.5));
+        assert_eq!(0, to_u8_repr(-1124.0));
     }
 
     #[test]
     fn save_convert_float_to_byte_higher_one() {
-        assert_eq!(255, to_byte_repr(1.0));
-        assert_eq!(255, to_byte_repr(1.1));
-        assert_eq!(255, to_byte_repr(112.5));
-        assert_eq!(255, to_byte_repr(1204.0));
+        assert_eq!(255, to_u8_repr(1.0));
+        assert_eq!(255, to_u8_repr(1.1));
+        assert_eq!(255, to_u8_repr(112.5));
+        assert_eq!(255, to_u8_repr(1204.0));
     }
 
     #[test]
     fn save_convert_float_to_byte_infinite() {
-        assert_eq!(0, to_byte_repr(f64::NAN));
-        assert_eq!(0, to_byte_repr(f64::NEG_INFINITY));
-        assert_eq!(255, to_byte_repr(f64::INFINITY));
+        assert_eq!(0, to_u8_repr(f64::NAN));
+        assert_eq!(0, to_u8_repr(f64::NEG_INFINITY));
+        assert_eq!(255, to_u8_repr(f64::INFINITY));
     }
 
     #[test]

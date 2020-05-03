@@ -60,9 +60,9 @@ impl RGB24 {
     /// - Any values < 0 it will be treated as 0
     pub fn from_rgb_f64(r: f64, g: f64, b: f64) -> Self {
         RGB24::from_rgb(
-            number_utils::to_byte_repr(r),
-            number_utils::to_byte_repr(g),
-            number_utils::to_byte_repr(b),
+            number_utils::to_u8_repr(r),
+            number_utils::to_u8_repr(g),
+            number_utils::to_u8_repr(b),
         )
     }
 

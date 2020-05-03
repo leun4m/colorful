@@ -1,4 +1,4 @@
-/// The RGB color model (custom color depth)
-pub mod rgb;
-/// The RGB (24-bit) color model
+/// The RGB color model (24-bit)
 pub mod rgb24;
+/// The RGB color model (48-bit)
+pub mod rgb48;
