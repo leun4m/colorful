@@ -24,10 +24,38 @@ pub struct RGB24 {
 pub const CHANNEL_MAX: u32 = 255;
 
 /// White as `RGB24`
-pub const WHITE: RGB24 = presets::WHITE;
+pub const WHITE: RGB24 = RGB24 {
+    r: u8::MAX,
+    g: u8::MAX,
+    b: u8::MAX,
+};
 
 /// Black as `RGB24`
-pub const BLACK: RGB24 = presets::BLACK;
+pub const BLACK: RGB24 = RGB24 {
+    r: u8::MIN,
+    g: u8::MIN,
+    b: u8::MIN,
+};
+/// The default red: `#f00`
+pub const RED: RGB24 = RGB24 {
+    r: u8::MAX,
+    g: u8::MIN,
+    b: u8::MIN,
+};
+
+/// The default green: `#0f0`
+pub const GREEN: RGB24 = RGB24 {
+    r: u8::MIN,
+    g: u8::MAX,
+    b: u8::MIN,
+};
+
+/// The default blue: `#00f`
+pub const BLUE: RGB24 = RGB24 {
+    r: u8::MIN,
+    g: u8::MIN,
+    b: u8::MAX,
+};
 
 impl RGB24 {
     /// Creates a new `RGB24`, setting all values to zero.
