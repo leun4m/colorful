@@ -4,6 +4,11 @@
 //!
 //! - RGB [(Wikipedia)](https://en.wikipedia.org/wiki/RGB_color_model) - based on *red, green, blue*
 //! - HSV [(Wikipedia)](https://en.wikipedia.org/wiki/HSL_and_HSV) - based on *hue, saturation, value*
+//!
+//! # Please note
+//!
+//! This library is still under heavy construction
+//!
 
 /// Contains different color models
 pub mod color_models;
