@@ -10,11 +10,17 @@
 //! This library is still under heavy construction
 //!
 
+extern crate strum;
+extern crate strum_macros;
+
 /// Contains different color models
 pub mod models;
 
 /// Contains the calculations for conversion between color models
 pub mod converter;
+
+/// Contains a set of common predefined colors
+pub mod presets;
 
 /// Contains various util methods for the work with numbers
 mod number_utils;

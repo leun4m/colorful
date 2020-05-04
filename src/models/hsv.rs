@@ -79,8 +79,8 @@ impl HSV {
     ///
     /// # Arguments
     /// **H**
-    /// Will transform any values above 360 to 360
-    /// Will transform any values below 0 to 0
+    /// - Will transform any values above 360 to 360
+    /// - Will transform any values below 0 to 0
     ///
     /// # Panics
     /// Will panic if at least one of the values is NaN!

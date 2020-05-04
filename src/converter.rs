@@ -22,6 +22,12 @@ pub fn rgb_to_hsv<T>(rgb_color: &impl RGB<T>) -> HSV {
         60.0 * (((r - g) / delta) + 4.0)
     };
 
+    // eprintln!("r: {} g: {} b: {}", r, g, b);
+    // eprintln!(
+    //     "/// cMin:{} cMax:{} delta: {} hue:{} ///",
+    //     c_min, c_max, delta, hue
+    // );
+
     let saturation = if c_max > 0.0 { delta / c_max } else { 0.0 };
     let value = c_max;
 
@@ -93,6 +99,23 @@ mod tests {
     use crate::models::rgb::rgb24;
     use crate::models::rgb::rgb24::RGB24;
     use crate::models::rgb::rgb48;
+    use crate::models::rgb::rgb48::RGB48;
+    use crate::presets::X11Color;
+    use strum::IntoEnumIterator;
+
+    fn approx_equal_hsv(a: &HSV, b: &HSV) -> bool {
+        const EPSILON: f64 = 0.1;
+
+        if (a.h() - b.h()).abs() / hsv::H_MAX < EPSILON
+            && (a.s() - b.s()).abs() / hsv::S_MAX < EPSILON
+            && (a.v() - b.v()).abs() / hsv::V_MAX < EPSILON
+        {
+            true
+        } else {
+            println!("{:?} !~ {:?}", a, b);
+            false
+        }
+    }
 
     #[test]
     fn rgb_to_hsv_rgb24() {
@@ -101,6 +124,22 @@ mod tests {
         assert_eq!(hsv::RED, rgb_to_hsv(&rgb24::RED));
         assert_eq!(hsv::GREEN, rgb_to_hsv(&rgb24::GREEN));
         assert_eq!(hsv::BLUE, rgb_to_hsv(&rgb24::BLUE));
+    }
+
+    #[test]
+    fn rgb_to_hsv_x11() {
+        let mut a = 0;
+        for color in X11Color::iter() {
+            // assert!(
+            //     approx_equal_hsv(&color.to_hsv(), &rgb_to_hsv(&color.to_rgb::<RGB48, u16>())),
+            //     "{:?}",
+            //     color
+            // );
+            if !approx_equal_hsv(&color.to_hsv(), &rgb_to_hsv(&color.to_rgb::<RGB48, u16>())) {
+                a += 1;
+            }
+        }
+        assert_eq!(a, 0)
     }
 
     #[test]
