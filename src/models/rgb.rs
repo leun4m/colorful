@@ -1,4 +1,4 @@
-use crate::color_models::hsv::HSV;
+use crate::models::hsv::HSV;
 
 /// The RGB color model (24-bit)
 pub mod rgb24;
@@ -62,7 +62,7 @@ pub trait RGB<T> {
     /// Sets the value of channel **B** (blue)
     fn set_b(&mut self, b: T);
 
-    /// Converts this to an RGB triplet
+    /// Converts this to an RGB tuple
     fn as_tuple(&self) -> (T, T, T) {
         (self.r(), self.g(), self.b())
     }

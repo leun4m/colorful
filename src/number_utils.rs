@@ -1,9 +1,9 @@
-/// Calculates the maximum value of the given triple
+/// Calculates the maximum value of the given tuple
 pub fn get_max(a: f64, b: f64, c: f64) -> f64 {
     a.max(b.max(c))
 }
 
-/// Calculates the minimum value of the given triple
+/// Calculates the minimum value of the given tuple
 pub fn get_min(a: f64, b: f64, c: f64) -> f64 {
     a.min(b.min(c))
 }

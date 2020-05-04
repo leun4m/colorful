@@ -11,18 +11,18 @@
 //!
 
 /// Contains different color models
-pub mod color_models;
+pub mod models;
 
 /// Contains the calculations for conversion between color models
-pub mod color_converter;
+pub mod converter;
 
 /// Contains various util methods for the work with numbers
 mod number_utils;
 
 #[cfg(test)]
 mod tests {
-    use crate::color_models::rgb::rgb24::RGB24;
-    use crate::color_models::rgb::RGB;
+    use crate::models::rgb::rgb24::RGB24;
+    use crate::models::rgb::RGB;
 
     #[test]
     fn rgb() {

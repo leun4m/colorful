@@ -1,7 +1,7 @@
-use crate::color_models::hsv::HSV;
-use crate::color_models::rgb::rgb24::RGB24;
-use crate::color_models::rgb::rgb48::RGB48;
-use crate::color_models::rgb::RGB;
+use crate::models::hsv::HSV;
+use crate::models::rgb::rgb24::RGB24;
+use crate::models::rgb::rgb48::RGB48;
+use crate::models::rgb::RGB;
 use crate::number_utils;
 
 /// Converts the given `RGB` -> `HSV`
@@ -87,12 +87,12 @@ pub fn rgb48_to_rgb24(rgb: &RGB48) -> RGB24 {
 
 #[cfg(test)]
 mod tests {
-    use crate::color_converter::{hsv_to_rgb, rgb24_to_rgb48, rgb48_to_rgb24, rgb_to_hsv};
-    use crate::color_models::hsv;
-    use crate::color_models::hsv::HSV;
-    use crate::color_models::rgb::rgb24;
-    use crate::color_models::rgb::rgb24::RGB24;
-    use crate::color_models::rgb::rgb48;
+    use crate::converter::{hsv_to_rgb, rgb24_to_rgb48, rgb48_to_rgb24, rgb_to_hsv};
+    use crate::models::hsv;
+    use crate::models::hsv::HSV;
+    use crate::models::rgb::rgb24;
+    use crate::models::rgb::rgb24::RGB24;
+    use crate::models::rgb::rgb48;
 
     #[test]
     fn rgb_to_hsv_rgb24() {

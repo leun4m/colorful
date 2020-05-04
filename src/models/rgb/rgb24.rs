@@ -1,7 +1,7 @@
-use crate::color_converter;
-use crate::color_models::hsv::HSV;
-use crate::color_models::rgb::RGB;
-use crate::color_models::Color;
+use crate::converter;
+use crate::models::hsv::HSV;
+use crate::models::rgb::RGB;
+use crate::models::Color;
 use crate::number_utils;
 use std::fmt::{Display, Formatter, Result};
 
@@ -183,7 +183,7 @@ impl RGB<u8> for RGB24 {
     }
 
     fn to_hsv(&self) -> HSV {
-        color_converter::rgb_to_hsv(self)
+        converter::rgb_to_hsv(self)
     }
 }
 

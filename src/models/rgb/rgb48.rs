@@ -1,7 +1,7 @@
-use crate::color_models::hsv::HSV;
-use crate::color_models::rgb::RGB;
-use crate::color_models::Color;
-use crate::{color_converter, number_utils};
+use crate::models::hsv::HSV;
+use crate::models::rgb::RGB;
+use crate::models::Color;
+use crate::{converter, number_utils};
 use std::fmt::{Display, Formatter, Result};
 
 /// Representation of a color model stored as RGB channels.
@@ -109,7 +109,7 @@ impl RGB<u16> for RGB48 {
         )
     }
     fn to_hsv(&self) -> HSV {
-        color_converter::rgb_to_hsv(self)
+        converter::rgb_to_hsv(self)
     }
 }
 

@@ -1,6 +1,6 @@
-use crate::color_converter;
-use crate::color_models::rgb::RGB;
-use crate::color_models::Color;
+use crate::converter;
+use crate::models::rgb::RGB;
+use crate::models::Color;
 use crate::number_utils;
 
 /// Representation a HSV color
@@ -138,7 +138,7 @@ impl HSV {
     where
         T: RGB<U>,
     {
-        color_converter::hsv_to_rgb(self)
+        converter::hsv_to_rgb(self)
     }
 
     /// Returns value of channel **hue**
@@ -202,8 +202,8 @@ impl PartialEq for HSV {
 
 #[cfg(test)]
 mod tests {
-    use crate::color_models::hsv::{BLACK, HSV, H_MAX, H_MIN, S_MAX, S_MIN, V_MAX, V_MIN, WHITE};
-    use crate::color_models::Color;
+    use crate::models::hsv::{BLACK, HSV, H_MAX, H_MIN, S_MAX, S_MIN, V_MAX, V_MIN, WHITE};
+    use crate::models::Color;
 
     #[test]
     fn getter_setter() {
