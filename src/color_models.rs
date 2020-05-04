@@ -1,6 +1,6 @@
 /// The HSV color model
 pub mod hsv;
-/// The RGB color model (custom color depth)
+/// The RGB color model
 pub mod rgb;
 
 /// Collection of basic methods every color (regardless of model) should have
