@@ -121,7 +121,7 @@ mod tests {
         assert_eq!(rgb24::BLUE, hsv_to_rgb(&hsv::BLUE));
 
         assert_eq!(
-            RGB24::from((255, 0, 127)),
+            RGB24::from((255, 0, 128)),
             hsv_to_rgb(&HSV::from((330.0, 1.0, 1.0)))
         )
     }

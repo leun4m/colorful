@@ -359,7 +359,7 @@ mod tests {
     fn from_rgb_float_custom() {
         assert_eq!("ffffff", RGB24::from_rgb_f64(1.0, 1.0, 1.0).to_hex());
         assert_eq!("000000", RGB24::from_rgb_f64(0.0, 0.0, 0.0).to_hex());
-        assert_eq!("7f7f7f", RGB24::from_rgb_f64(0.5, 0.5, 0.5).to_hex());
+        assert_eq!("808080", RGB24::from_rgb_f64(0.5, 0.5, 0.5).to_hex());
         assert_eq!("333333", RGB24::from_rgb_f64(0.2, 0.2, 0.2).to_hex());
     }
 

@@ -21,7 +21,7 @@ pub fn to_u8_repr(float: f64) -> u8 {
     } else if float <= 0.0 {
         0
     } else {
-        (float * u8::MAX as f64) as u8
+        (float * u8::MAX as f64).round() as u8
     }
 }
 
@@ -38,7 +38,7 @@ pub fn to_u16_repr(float: f64) -> u16 {
     } else if float <= 0.0 {
         0
     } else {
-        (float * u16::MAX as f64) as u16
+        (float * u16::MAX as f64).round() as u16
     }
 }
 
@@ -224,7 +224,7 @@ mod tests {
     fn save_convert_float_to_byte_normal() {
         assert_eq!(0, to_u8_repr(0.0));
         assert_eq!(51, to_u8_repr(0.2));
-        assert_eq!(127, to_u8_repr(0.5));
+        assert_eq!(128, to_u8_repr(0.5));
         assert_eq!(255, to_u8_repr(1.0));
     }
 
