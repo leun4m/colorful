@@ -69,9 +69,9 @@ fn calc_hsv(h: f64, chroma: f64, x: f64) -> (f64, f64, f64) {
 pub fn rgb24_to_rgb48(rgb: &RGB24) -> RGB48 {
     const FACTOR: u16 = RGB48::MAX / RGB24::MAX as u16;
     RGB48::from_rgb(
-        (rgb.r() as u16 * FACTOR),
-        (rgb.g() as u16 * FACTOR),
-        (rgb.b() as u16 * FACTOR),
+        rgb.r() as u16 * FACTOR,
+        rgb.g() as u16 * FACTOR,
+        rgb.b() as u16 * FACTOR,
     )
 }
 

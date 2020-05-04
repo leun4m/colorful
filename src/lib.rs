@@ -22,7 +22,6 @@ mod number_utils;
 #[cfg(test)]
 mod tests {
     use crate::color_models::rgb::rgb24::RGB24;
-    use crate::color_models::rgb::rgb48::RGB48;
     use crate::color_models::rgb::RGB;
 
     #[test]

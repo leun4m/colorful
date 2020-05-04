@@ -1,4 +1,3 @@
-use crate::color_converter;
 use crate::color_models::hsv::HSV;
 
 /// The RGB color model (24-bit)

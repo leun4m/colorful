@@ -8,30 +8,6 @@ pub fn get_min(a: f64, b: f64, c: f64) -> f64 {
     a.min(b.min(c))
 }
 
-/// Converts *byte* to *float* representation
-pub fn as_float(a: u8) -> f64 {
-    a as f64 / u8::MAX as f64
-}
-
-/// Converts *byte* to *float* representation
-pub fn as_float_u16(a: u16) -> f64 {
-    a as f64 / u16::MAX as f64
-}
-
-/// Converts *byte* to *float* representation
-pub fn as_float_tuple(abc: (u8, u8, u8)) -> (f64, f64, f64) {
-    (as_float(abc.0), as_float(abc.1), as_float(abc.2))
-}
-
-/// Converts *byte* to *float* representation
-pub fn as_float_tuple_u16(abc: (u16, u16, u16)) -> (f64, f64, f64) {
-    (
-        as_float_u16(abc.0),
-        as_float_u16(abc.1),
-        as_float_u16(abc.2),
-    )
-}
-
 /// Maps `f64` to `u8`
 ///
 /// # Expects
@@ -118,7 +94,7 @@ pub fn convert_to_range(a: f64, min: f64, max: f64) -> f64 {
 
 #[cfg(test)]
 mod tests {
-    use crate::number_utils::{approx_equal_f64, as_float, get_max, get_min, to_u8_repr};
+    use crate::number_utils::{approx_equal_f64, get_max, get_min, to_u8_repr};
 
     #[test]
     fn approx_equal_f64_nan_nan() {
@@ -307,13 +283,5 @@ mod tests {
             f64::INFINITY,
             get_min(f64::INFINITY, f64::INFINITY, f64::NAN)
         );
-    }
-
-    #[test]
-    fn as_float_normal() {
-        assert!(approx_equal_f64(0.0, as_float(0), 0.01));
-        assert!(approx_equal_f64(0.2, as_float(51), 0.01));
-        assert!(approx_equal_f64(0.5, as_float(127), 0.01));
-        assert!(approx_equal_f64(1.0, as_float(255), 0.01));
     }
 }
