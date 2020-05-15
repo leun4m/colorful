@@ -4,7 +4,12 @@ use crate::models::rgb::rgb48::RGB48;
 use crate::models::rgb::RGB;
 use crate::number_utils;
 
-/// Converts the given `RGB` -> `HSV`
+/// [HSV]: crate::models::hsv::HSV
+/// [RGB]: crate::models::rgb::RGB
+/// [RGB24]: crate::models::rgb::rgb24::RGB24
+/// [RGB48]: crate::models::rgb::rgb24::RGB24
+
+/// Converts the given [`RGB`] -> [`HSV`]
 pub fn rgb_to_hsv<T>(rgb_color: &impl RGB<T>) -> HSV {
     let (r, g, b) = rgb_color.as_tuple_f64();
 
@@ -32,41 +37,31 @@ pub fn rgb_to_hsv<T>(rgb_color: &impl RGB<T>) -> HSV {
     HSV::from_hsv(hue, saturation, value)
 }
 
-/// Converts the given `HSV` -> `RGB`
+/// Converts the given [`HSV`] -> [`RGB`]
 pub fn hsv_to_rgb<T, U>(hsv: &HSV) -> T
 where
     T: RGB<U>,
 {
-    let chroma = hsv.v() * hsv.s();
-    let h = hsv.h() / 60.0;
-    let x = chroma * (1.0 - (h % 2.0 - 1.0).abs());
+    let h = (hsv.h() / 60.0) as u8;
+    let f = hsv.h() / 60.0 - h as f64;
+    let p = hsv.v() * (1.0 - hsv.s());
+    let q = hsv.v() * (1.0 - hsv.s() * f);
+    let t = hsv.v() * (1.0 - hsv.s() * (1.0 - f));
 
-    let rgb = calc_hsv(h, chroma, x);
-    let m = hsv.v() - chroma;
+    let a = match h {
+        0 | 6 => (hsv.v(), t, p),
+        1 => (q, hsv.v(), p),
+        2 => (p, hsv.v(), t),
+        3 => (p, q, hsv.v()),
+        4 => (t, p, hsv.v()),
+        5 => (hsv.v(), p, q),
+        _ => panic!("Impossible h: {}", h),
+    };
 
-    T::from_rgb_f64(rgb.0 + m, rgb.1 + m, rgb.2 + m)
+    T::from_rgb_f64(a.0, a.1, a.2)
 }
 
-fn calc_hsv(h: f64, chroma: f64, x: f64) -> (f64, f64, f64) {
-    if h.is_nan() {
-        (0.0, 0.0, 0.0)
-    } else if 0.0 <= h && h <= 1.0 {
-        (chroma, x, 0.0)
-    } else if 1.0 < h && h <= 2.0 {
-        (x, chroma, 0.0)
-    } else if 2.0 < h && h <= 3.0 {
-        (0.0, chroma, x)
-    } else if 3.0 < h && h <= 4.0 {
-        (0.0, x, chroma)
-    } else if 4.0 < h && h <= 5.0 {
-        (x, 0.0, chroma)
-    } else if 5.0 < h && h <= 6.0 {
-        (chroma, 0.0, x)
-    } else {
-        (0.0, 0.0, 0.0)
-    }
-}
-/// Converts the given `RGB24` -> `RGB48`
+/// Converts the given [`RGB24`] -> [`RGB48`]
 pub fn rgb24_to_rgb48(rgb: &RGB24) -> RGB48 {
     const FACTOR: u16 = RGB48::MAX / RGB24::MAX as u16;
     RGB48::from_rgb(
@@ -76,7 +71,7 @@ pub fn rgb24_to_rgb48(rgb: &RGB24) -> RGB48 {
     )
 }
 
-/// Converts the given `RGB48` -> `RGB24`
+/// Converts the given [`RGB48`] -> [`RGB24`]
 pub fn rgb48_to_rgb24(rgb: &RGB48) -> RGB24 {
     const DIVIDER: u16 = RGB48::MAX / RGB24::MAX as u16;
     RGB24::from_rgb(
