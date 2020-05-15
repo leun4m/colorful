@@ -95,19 +95,30 @@ mod tests {
     use crate::models::rgb::rgb48::RGB48;
     use crate::models::rgb::{rgb24, rgb48, RGB};
     use crate::presets::X11Color;
+    use std::fmt::Debug;
     use strum::IntoEnumIterator;
 
-    fn approx_equal_hsv(a: &HSV, b: &HSV) -> bool {
+    fn assert_approx_equal_hsv(a: &HSV, b: &HSV) {
         const EPSILON: f64 = 0.02;
 
-        if (a.h() - b.h()).abs() / hsv::H_MAX < EPSILON
-            && (a.s() - b.s()).abs() / hsv::S_MAX < EPSILON
-            && (a.v() - b.v()).abs() / hsv::V_MAX < EPSILON
+        if (a.h() - b.h()).abs() / hsv::H_MAX >= EPSILON
+            || (a.s() - b.s()).abs() / hsv::S_MAX >= EPSILON
+            || (a.v() - b.v()).abs() / hsv::V_MAX >= EPSILON
         {
-            true
-        } else {
-            println!("{:?} !~ {:?}", a, b);
-            false
+            panic!("{:?} !~ {:?}", a, b);
+        }
+    }
+
+    fn assert_approx_equal_rgb<T>(a: &T, b: &T) -> ()
+    where
+        T: RGB<u8> + Debug,
+    {
+        const EPSILON: i32 = 4;
+        if (a.r() as i32 - b.r() as i32).abs() >= EPSILON
+            || (a.g() as i32 - b.g() as i32).abs() >= EPSILON
+            || (a.b() as i32 - b.b() as i32).abs() >= EPSILON
+        {
+            panic!("{:?} !~ {:?}", a, b);
         }
     }
 
@@ -122,13 +133,16 @@ mod tests {
 
     #[test]
     fn rgb_to_hsv_x11() {
-        let mut a = 0;
         for color in X11Color::iter() {
-            if !approx_equal_hsv(&color.to_hsv(), &rgb_to_hsv(&color.to_rgb::<RGB48, u16>())) {
-                a += 1;
-            }
+            assert_approx_equal_hsv(&color.to_hsv(), &rgb_to_hsv(&color.to_rgb::<RGB48, u16>()));
         }
-        assert_eq!(a, 0)
+    }
+
+    #[test]
+    fn hsv_to_rgb_x11() {
+        for color in X11Color::iter() {
+            assert_approx_equal_rgb(&color.to_rgb(), &hsv_to_rgb::<RGB24, u8>(&color.to_hsv()));
+        }
     }
 
     #[test]
