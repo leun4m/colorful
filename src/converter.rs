@@ -33,9 +33,6 @@ pub fn rgb_to_hsv<T>(rgb_color: &impl RGB<T>) -> HSV {
 }
 
 /// Converts the given `HSV` -> `RGB`
-///
-/// This uses the formula provided by [Wikipedia](https://en.wikipedia.org/wiki/HSL_and_HSV#HSV_to_RGB)
-/// (2020-05-03)
 pub fn hsv_to_rgb<T, U>(hsv: &HSV) -> T
 where
     T: RGB<U>,
