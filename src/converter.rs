@@ -12,23 +12,21 @@ pub fn rgb_to_hsv<T>(rgb_color: &impl RGB<T>) -> HSV {
     let c_min = number_utils::get_min(r, g, b);
     let delta = c_max - c_min;
 
-    let hue = if delta == 0.0 {
+    let mut hue = if delta == 0.0 {
         0.0
-    } else if r >= b && r >= g {
-        60.0 * (((g - b) / delta) % 6.0)
-    } else if g >= r && g >= b {
+    } else if c_max == r {
+        60.0 * ((g - b) / delta)
+    } else if c_max == g {
         60.0 * (((b - r) / delta) + 2.0)
     } else {
         60.0 * (((r - g) / delta) + 4.0)
     };
 
-    // eprintln!("r: {} g: {} b: {}", r, g, b);
-    // eprintln!(
-    //     "/// cMin:{} cMax:{} delta: {} hue:{} ///",
-    //     c_min, c_max, delta, hue
-    // );
+    if hue < 0.0 {
+        hue += 360.0
+    }
 
-    let saturation = if c_max > 0.0 { delta / c_max } else { 0.0 };
+    let saturation = if c_max == 0.0 { 0.0 } else { delta / c_max };
     let value = c_max;
 
     HSV::from_hsv(hue, saturation, value)
@@ -96,15 +94,14 @@ mod tests {
     use crate::converter::{hsv_to_rgb, rgb24_to_rgb48, rgb48_to_rgb24, rgb_to_hsv};
     use crate::models::hsv;
     use crate::models::hsv::HSV;
-    use crate::models::rgb::rgb24;
     use crate::models::rgb::rgb24::RGB24;
-    use crate::models::rgb::rgb48;
     use crate::models::rgb::rgb48::RGB48;
+    use crate::models::rgb::{rgb24, rgb48, RGB};
     use crate::presets::X11Color;
     use strum::IntoEnumIterator;
 
     fn approx_equal_hsv(a: &HSV, b: &HSV) -> bool {
-        const EPSILON: f64 = 0.1;
+        const EPSILON: f64 = 0.02;
 
         if (a.h() - b.h()).abs() / hsv::H_MAX < EPSILON
             && (a.s() - b.s()).abs() / hsv::S_MAX < EPSILON
@@ -130,11 +127,6 @@ mod tests {
     fn rgb_to_hsv_x11() {
         let mut a = 0;
         for color in X11Color::iter() {
-            // assert!(
-            //     approx_equal_hsv(&color.to_hsv(), &rgb_to_hsv(&color.to_rgb::<RGB48, u16>())),
-            //     "{:?}",
-            //     color
-            // );
             if !approx_equal_hsv(&color.to_hsv(), &rgb_to_hsv(&color.to_rgb::<RGB48, u16>())) {
                 a += 1;
             }

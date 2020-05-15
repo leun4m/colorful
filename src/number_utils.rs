@@ -18,7 +18,7 @@ pub fn get_min(a: f64, b: f64, c: f64) -> f64 {
 pub fn to_u8_repr(float: f64) -> u8 {
     if float >= 1.0 {
         u8::MAX
-    } else if float <= 0.0 {
+    } else if float <= 0.0 || float.is_nan() {
         0
     } else {
         (float * u8::MAX as f64).round() as u8
