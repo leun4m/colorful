@@ -1,6 +1,6 @@
 [package]
 name = "colorful"
-version = "0.2.0"
+version = "0.3.0"
 authors = ["Manuel Krebs <m4nuelkrebs@gmail.com>"]
 edition = "2018"
 description = "Color conversion and more"
