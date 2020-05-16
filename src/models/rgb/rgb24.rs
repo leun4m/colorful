@@ -1,4 +1,4 @@
-use crate::converter;
+use crate::{converter, RGB48};
 use crate::models::hsv::HSV;
 use crate::models::rgb::RGBColor;
 use crate::models::Color;
@@ -67,6 +67,11 @@ impl RGB24 {
 
         let sum: u32 = (r << 8) + (g << 4) + b;
         format!("{:03x}", sum)
+    }
+
+    /// Converts [`RGB24`] -> [`RGB48`]
+    pub fn to_rgb48(&self) -> RGB48 {
+        converter::rgb24_to_rgb48(&self)
     }
 
     /// Converts an integer to the corresponding RGB Color

@@ -1,7 +1,7 @@
 use crate::models::hsv::HSV;
 use crate::models::rgb::RGBColor;
 use crate::models::Color;
-use crate::{converter, number_utils};
+use crate::{converter, number_utils, RGB24};
 use std::fmt::{Display, Formatter, Result};
 
 /// 48-bit RGB color
@@ -14,6 +14,16 @@ pub struct RGB48 {
     r: u16,
     g: u16,
     b: u16,
+}
+
+impl RGB48 {
+    /// Converts [`RGB48`] -> [`RGB24`]
+    ///
+    /// # Careful
+    /// This is a lossy conversion
+    pub fn to_rgb48(&self) -> RGB24 {
+        converter::rgb48_to_rgb24(&self)
+    }
 }
 
 impl RGBColor<u16> for RGB48 {
