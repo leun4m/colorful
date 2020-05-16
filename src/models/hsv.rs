@@ -3,6 +3,10 @@ use crate::models::Color;
 use crate::{converter, RGB24};
 use crate::{number_utils, RGB48};
 
+/// [RGB]: crate::models::rgb::RGB
+/// [RGB24]: crate::models::rgb::rgb24::RGB
+/// [RGB48]: crate::models::rgb::rgb48::RGB48
+
 /// HSV color - based on *hue, saturation, value*
 ///
 /// Each channel is stored as `f64`
@@ -10,10 +14,6 @@ use crate::{number_utils, RGB48};
 /// - `h` in degrees (0.0 - 360.0)
 /// - `s` as fraction (0.0 - 1.0)
 /// - `v` as fraction (0.0 - 1.0)
-///
-/// [RGB]: crate::models::rgb::RGB
-/// [RGB24]: crate::models::rgb::rgb24::RGB
-/// [RGB48]: crate::models::rgb::rgb48::RGB48
 #[derive(Debug)]
 pub struct HSV {
     h: f64,

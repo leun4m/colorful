@@ -9,7 +9,8 @@ pub mod rgb48;
 ///
 /// Suitable for different color depths
 ///
-/// `T` is meant to be the base type for each channel
+/// # Type parameters
+/// - `T`: the base type for each channel
 ///
 pub trait RGB<T> {
     /// The minimal value for a channel (0%)
@@ -40,7 +41,7 @@ pub trait RGB<T> {
 
     /// Creates a new RGB color
     ///
-    /// # Arguments
+    /// # Parameters
     /// - `r`: red
     /// - `g`: green    
     /// - `b`: blue
@@ -48,7 +49,7 @@ pub trait RGB<T> {
 
     /// Creates a new RGB color from the given floating point values.
     ///
-    /// # Arguments
+    /// # Parameters
     /// - `r`: red
     /// - `g`: green
     /// - `b`: blue

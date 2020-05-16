@@ -20,7 +20,7 @@ pub struct RGB24 {
 impl RGB24 {
     /// Creates a new `RGB24` from the given hex string.
     ///
-    /// # Arguments
+    /// # Parameters
     /// - `hex`: the hexadecimal string to be converted
     ///
     /// # Please note
