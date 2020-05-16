@@ -1,4 +1,3 @@
-use std::hash::Hash;
 use std::fmt::{Debug, Display};
 
 /// The HSV color model

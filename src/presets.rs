@@ -1,9 +1,12 @@
 use crate::models::hsv::{HSVColor, HSV};
 use crate::models::rgb::RGBColor;
+
+#[cfg(test)]
 use strum_macros::EnumIter;
 
 /// Contains all standardized [X11 color names](https://en.wikipedia.org/wiki/X11_color_names)
-#[derive(EnumIter, Debug)]
+#[derive(Debug)]
+#[cfg_attr(test, derive(EnumIter))]
 pub enum X11Color {
     AliceBlue,
     AntiqueWhite,

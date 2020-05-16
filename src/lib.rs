@@ -13,7 +13,9 @@
 #[macro_use]
 extern crate serde;
 
+#[cfg(test)]
 extern crate strum;
+#[cfg(test)]
 extern crate strum_macros;
 
 /// Contains different color models

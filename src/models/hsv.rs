@@ -3,7 +3,6 @@ use crate::models::Color;
 use crate::{converter, RGB24};
 use crate::{number_utils, RGB48};
 use std::fmt::{Display, Formatter, Result};
-use std::hash::{Hash, Hasher};
 
 /// [RGBColor]: crate::models::rgb::RGB
 /// [RGB24]: crate::models::rgb::rgb24::RGB
@@ -117,7 +116,7 @@ impl HSV {
     /// - (0, 0, 0) => (0.0, 0.0, 0.0)
     /// - (255, 255, 255) => (360.0, 1.0, 1.0)
     /// - (51, 51, 51) => (72.0, 0.2, 0.2)
-    fn from_hsv_u8(h: u8, s: u8, v: u8) -> Self {
+    pub fn from_hsv_u8(h: u8, s: u8, v: u8) -> Self {
         HSV::from_hsv(
             h as f64 / u8::MAX as f64 * HSV::H_MAX,
             s as f64 / u8::MAX as f64 * HSV::S_MAX,
@@ -134,7 +133,7 @@ impl HSV {
     ///
     /// # Returns
     /// Values as tuple (H, S, V)
-    fn as_tuple_u8(&self) -> (u8, u8, u8) {
+    pub fn as_tuple_u8(&self) -> (u8, u8, u8) {
         print!("{}", self.h);
         (
             (self.h / Self::H_MAX * u8::MAX as f64) as u8,
