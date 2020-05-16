@@ -2,6 +2,8 @@ use crate::models::rgb::RGBColor;
 use crate::models::Color;
 use crate::{converter, RGB24};
 use crate::{number_utils, RGB48};
+use std::fmt::{Display, Formatter, Result};
+use std::hash::{Hash, Hasher};
 
 /// [RGBColor]: crate::models::rgb::RGB
 /// [RGB24]: crate::models::rgb::rgb24::RGB
@@ -13,7 +15,7 @@ use crate::{number_utils, RGB48};
 ///
 /// # Type parameters
 /// - `T`: the base type for each channel
-pub trait HSVColor<T> {
+pub trait HSVColor<T>: Color {
     // Used for the precision of equality between to HSV Colors
     const EPSILON: T;
 
@@ -44,11 +46,6 @@ pub trait HSVColor<T> {
     const S_MAX: T;
     /// The maximum for channel **value**
     const V_MAX: T;
-
-    /// Creates a new `HSV`, setting all values to zero
-    ///
-    /// This is *black*.
-    fn new() -> Self;
 
     /// Creates a new `HSV`
     fn from_hsv(h: T, s: T, v: T) -> Self;
@@ -98,7 +95,7 @@ pub trait HSVColor<T> {
 /// - `h`: **hue** in degrees (0.0 - 360.0)
 /// - `s`: **saturation** as fraction (0.0 - 1.0)
 /// - `v`: **value** as fraction (0.0 - 1.0)
-#[derive(Debug)]
+#[derive(Copy, Clone, Debug)]
 pub struct HSV {
     h: f64,
     s: f64,
@@ -186,10 +183,6 @@ impl HSVColor<f64> for HSV {
     const H_MAX: f64 = 360.0;
     const S_MAX: f64 = 1.0;
     const V_MAX: f64 = 1.0;
-
-    fn new() -> Self {
-        HSV::from_hsv(0.0, 0.0, 0.0)
-    }
 
     /// Creates a new `HSV` from the given floating point values.
     ///
@@ -282,6 +275,21 @@ impl PartialEq for HSV {
     }
 }
 
+impl Display for HSV {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
+        write!(f, "(H:{}, S:{}, V:{})", self.h, self.s, self.v)
+    }
+}
+
+impl Default for HSV {
+    /// Creates a new `HSV`, setting all values to zero
+    ///
+    /// This is *black*.
+    fn default() -> Self {
+        Self::BLACK
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use crate::models::hsv::{HSVColor, HSV};
@@ -289,7 +297,7 @@ mod tests {
 
     #[test]
     fn getter_setter() {
-        let mut color = HSV::new();
+        let mut color = HSV::default();
         assert_eq!(0.0, color.h());
         assert_eq!(0.0, color.s());
         assert_eq!(0.0, color.v());

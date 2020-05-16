@@ -10,7 +10,7 @@ use std::fmt::{Display, Formatter, Result};
 /// This is the most widespread variant of RGB called
 /// [True color (24-bit)](https://en.wikipedia.org/wiki/Color_depth#True_color_(24-bit))
 /// meaning every color channel consists of `8-bit` (0-255).
-#[derive(Debug)]
+#[derive(Copy, Clone, Debug, Eq, Hash)]
 pub struct RGB24 {
     r: u8,
     g: u8,
@@ -130,10 +130,6 @@ impl RGBColor<u8> for RGB24 {
         b: u8::MAX,
     };
 
-    fn new() -> Self {
-        RGB24::from_rgb(0, 0, 0)
-    }
-
     fn from_rgb(r: u8, g: u8, b: u8) -> Self {
         RGB24 { r, g, b }
     }
@@ -222,18 +218,24 @@ impl Color for RGB24 {
     }
 }
 
+impl Default for RGB24 {
+    fn default() -> Self {
+        Self::BLACK
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
     fn new_() {
-        assert_eq!(RGB24::BLACK, RGB24::new());
+        assert_eq!(RGB24::BLACK, RGB24::default());
     }
 
     #[test]
     fn set_red_() {
-        let mut color = RGB24::new();
+        let mut color = RGB24::default();
         assert_eq!(0, color.r());
         color.set_r(3);
         assert_eq!(3, color.r());
@@ -243,7 +245,7 @@ mod tests {
 
     #[test]
     fn set_green_() {
-        let mut color = RGB24::new();
+        let mut color = RGB24::default();
         assert_eq!(0, color.g());
         color.set_g(42);
         assert_eq!(0, color.r());
@@ -253,7 +255,7 @@ mod tests {
 
     #[test]
     fn set_blue_() {
-        let mut color = RGB24::new();
+        let mut color = RGB24::default();
         assert_eq!(0, color.b());
         color.set_b(127);
         assert_eq!(0, color.r());

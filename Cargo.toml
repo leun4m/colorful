@@ -3,6 +3,11 @@ name = "colorful"
 version = "0.2.0"
 authors = ["Manuel Krebs <m4nuelkrebs@gmail.com>"]
 edition = "2018"
+description = "Color conversion and more"
+keywords = ["graphics", "color"]
+license = "MIT"
+repository = "https://github.com/leun4m/colorful"
+
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

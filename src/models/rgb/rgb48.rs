@@ -8,7 +8,7 @@ use std::fmt::{Display, Formatter, Result};
 ///
 /// This is a *deep color*, meaning every color channel consists of `16-bit` (0 - 65535).
 ///
-#[derive(Debug)]
+#[derive(Copy, Clone, Debug, Eq, Hash)]
 pub struct RGB48 {
     r: u16,
     g: u16,
@@ -49,10 +49,6 @@ impl RGBColor<u16> for RGB48 {
         g: u16::MIN,
         b: u16::MAX,
     };
-
-    fn new() -> Self {
-        Self::from_rgb(0, 0, 0)
-    }
 
     fn from_rgb(r: u16, g: u16, b: u16) -> Self {
         Self { r, g, b }
@@ -147,18 +143,27 @@ impl Color for RGB48 {
     }
 }
 
+impl Default for RGB48 {
+    /// Creates a new `RGB`, setting all values to zero
+    ///
+    /// This is *black*.
+    fn default() -> Self {
+        Self::BLACK
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
     fn new_() {
-        assert_eq!(RGB48::BLACK, RGB48::new());
+        assert_eq!(RGB48::BLACK, RGB48::default());
     }
 
     #[test]
     fn set_r_() {
-        let mut color = RGB48::new();
+        let mut color = RGB48::default();
         assert_eq!(0, color.r());
         color.set_r(3);
         assert_eq!(3, color.r());
@@ -168,7 +173,7 @@ mod tests {
 
     #[test]
     fn set_g_() {
-        let mut color = RGB48::new();
+        let mut color = RGB48::default();
         assert_eq!(0, color.g());
         color.set_g(42);
         assert_eq!(0, color.r());
@@ -178,7 +183,7 @@ mod tests {
 
     #[test]
     fn set_b_() {
-        let mut color = RGB48::new();
+        let mut color = RGB48::default();
         assert_eq!(0, color.b());
         color.set_b(127);
         assert_eq!(0, color.r());

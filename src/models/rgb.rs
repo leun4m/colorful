@@ -1,4 +1,5 @@
 use crate::models::hsv::HSV;
+use crate::Color;
 
 /// The RGB color model (24-bit)
 pub mod rgb24;
@@ -12,7 +13,7 @@ pub mod rgb48;
 /// # Type parameters
 /// - `T`: the base type for each channel
 ///
-pub trait RGBColor<T> {
+pub trait RGBColor<T>: Color {
     /// The minimal value for a channel (0%)
     const MIN: T;
 
@@ -33,11 +34,6 @@ pub trait RGBColor<T> {
 
     /// 100% blue
     const BLUE: Self;
-
-    /// Creates a new RGB color, setting all values to zero.
-    ///
-    /// This is *black*.
-    fn new() -> Self;
 
     /// Creates a new RGB color
     ///
