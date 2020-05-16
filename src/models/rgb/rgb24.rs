@@ -11,6 +11,7 @@ use std::fmt::{Display, Formatter, Result};
 /// [True color (24-bit)](https://en.wikipedia.org/wiki/Color_depth#True_color_(24-bit))
 /// meaning every color channel consists of `8-bit` (0-255).
 #[derive(Copy, Clone, Debug, Eq, Hash)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct RGB24 {
     r: u8,
     g: u8,

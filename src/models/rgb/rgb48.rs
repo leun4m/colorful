@@ -9,6 +9,7 @@ use std::fmt::{Display, Formatter, Result};
 /// This is a *deep color*, meaning every color channel consists of `16-bit` (0 - 65535).
 ///
 #[derive(Copy, Clone, Debug, Eq, Hash)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct RGB48 {
     r: u16,
     g: u16,

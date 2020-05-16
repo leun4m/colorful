@@ -96,6 +96,7 @@ pub trait HSVColor<T>: Color {
 /// - `s`: **saturation** as fraction (0.0 - 1.0)
 /// - `v`: **value** as fraction (0.0 - 1.0)
 #[derive(Copy, Clone, Debug)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct HSV {
     h: f64,
     s: f64,
