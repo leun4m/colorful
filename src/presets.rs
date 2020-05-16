@@ -1,4 +1,4 @@
-use crate::models::hsv::HSV;
+use crate::models::hsv::{HSVColor, HSV};
 use crate::models::rgb::RGBColor;
 use strum_macros::EnumIter;
 

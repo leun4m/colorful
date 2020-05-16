@@ -16,7 +16,7 @@ extern crate strum_macros;
 /// Contains different color models
 mod models;
 
-pub use models::hsv::HSV;
+pub use models::hsv::{HSVColor, HSV};
 pub use models::rgb::rgb24::RGB24;
 pub use models::rgb::rgb48::RGB48;
 pub use models::rgb::RGBColor;
@@ -33,6 +33,7 @@ mod number_utils;
 
 #[cfg(test)]
 mod tests {
+    use crate::models::hsv::HSVColor;
     use crate::models::rgb::rgb24::RGB24;
     use crate::models::rgb::RGBColor;
 
