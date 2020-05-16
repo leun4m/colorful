@@ -1,9 +1,9 @@
-use crate::models::rgb::RGB;
+use crate::models::rgb::RGBColor;
 use crate::models::Color;
 use crate::{converter, RGB24};
 use crate::{number_utils, RGB48};
 
-/// [RGB]: crate::models::rgb::RGB
+/// [RGBColor]: crate::models::rgb::RGB
 /// [RGB24]: crate::models::rgb::rgb24::RGB
 /// [RGB48]: crate::models::rgb::rgb48::RGB48
 
@@ -154,10 +154,10 @@ impl HSV {
         )
     }
 
-    /// Converts this to [`RGB`]
+    /// Converts this to [`RGBColor`]
     pub fn to_rgb<T, U>(&self) -> T
     where
-        T: RGB<U>,
+        T: RGBColor<U>,
     {
         converter::hsv_to_rgb(self)
     }

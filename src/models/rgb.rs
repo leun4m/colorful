@@ -12,7 +12,7 @@ pub mod rgb48;
 /// # Type parameters
 /// - `T`: the base type for each channel
 ///
-pub trait RGB<T> {
+pub trait RGBColor<T> {
     /// The minimal value for a channel (0%)
     const MIN: T;
 

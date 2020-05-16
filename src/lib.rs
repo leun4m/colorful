@@ -19,7 +19,7 @@ mod models;
 pub use models::hsv::HSV;
 pub use models::rgb::rgb24::RGB24;
 pub use models::rgb::rgb48::RGB48;
-pub use models::rgb::RGB;
+pub use models::rgb::RGBColor;
 pub use models::Color;
 
 /// Contains a set of common predefined colors
@@ -34,7 +34,7 @@ mod number_utils;
 #[cfg(test)]
 mod tests {
     use crate::models::rgb::rgb24::RGB24;
-    use crate::models::rgb::RGB;
+    use crate::models::rgb::RGBColor;
 
     #[test]
     fn rgb() {

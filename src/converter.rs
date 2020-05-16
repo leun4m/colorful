@@ -1,16 +1,16 @@
 use crate::models::hsv::HSV;
 use crate::models::rgb::rgb24::RGB24;
 use crate::models::rgb::rgb48::RGB48;
-use crate::models::rgb::RGB;
+use crate::models::rgb::RGBColor;
 use crate::number_utils;
 
 /// [HSV]: crate::models::hsv::HSV
-/// [RGB]: crate::models::rgb::RGB
+/// [RGBColor]: crate::models::rgb::RGBColor
 /// [RGB24]: crate::models::rgb::rgb24::RGB24
 /// [RGB48]: crate::models::rgb::rgb24::RGB24
 
-/// Converts the given [`RGB`] -> [`HSV`]
-pub fn rgb_to_hsv<T>(rgb_color: &impl RGB<T>) -> HSV {
+/// Converts the given [`RGBColor`] -> [`HSV`]
+pub fn rgb_to_hsv<T>(rgb_color: &impl RGBColor<T>) -> HSV {
     let (r, g, b) = rgb_color.as_tuple_f64();
 
     let c_max = number_utils::get_max(r, g, b);
@@ -37,10 +37,10 @@ pub fn rgb_to_hsv<T>(rgb_color: &impl RGB<T>) -> HSV {
     HSV::from_hsv(hue, saturation, value)
 }
 
-/// Converts the given [`HSV`] -> [`RGB`]
+/// Converts the given [`HSV`] -> [`RGBColor`]
 pub fn hsv_to_rgb<T, U>(hsv: &HSV) -> T
 where
-    T: RGB<U>,
+    T: RGBColor<U>,
 {
     let h = (hsv.h() / 60.0) as u8;
     let f = hsv.h() / 60.0 - h as f64;
@@ -87,7 +87,7 @@ mod tests {
     use crate::models::hsv::HSV;
     use crate::models::rgb::rgb24::RGB24;
     use crate::models::rgb::rgb48::RGB48;
-    use crate::models::rgb::RGB;
+    use crate::models::rgb::RGBColor;
     use crate::presets::X11Color;
     use std::fmt::Debug;
     use strum::IntoEnumIterator;
@@ -105,7 +105,7 @@ mod tests {
 
     fn assert_approx_equal_rgb<T>(a: &T, b: &T) -> ()
     where
-        T: RGB<u8> + Debug,
+        T: RGBColor<u8> + Debug,
     {
         const EPSILON: i32 = 4;
         if (a.r() as i32 - b.r() as i32).abs() >= EPSILON

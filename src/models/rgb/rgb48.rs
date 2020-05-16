@@ -1,5 +1,5 @@
 use crate::models::hsv::HSV;
-use crate::models::rgb::RGB;
+use crate::models::rgb::RGBColor;
 use crate::models::Color;
 use crate::{converter, number_utils};
 use std::fmt::{Display, Formatter, Result};
@@ -15,7 +15,7 @@ pub struct RGB48 {
     b: u16,
 }
 
-impl RGB<u16> for RGB48 {
+impl RGBColor<u16> for RGB48 {
     const MIN: u16 = u16::MIN;
 
     const MAX: u16 = u16::MAX;

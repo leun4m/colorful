@@ -1,5 +1,5 @@
 use crate::models::hsv::HSV;
-use crate::models::rgb::RGB;
+use crate::models::rgb::RGBColor;
 use strum_macros::EnumIter;
 
 /// Contains all standardized [X11 color names](https://en.wikipedia.org/wiki/X11_color_names)
@@ -155,7 +155,7 @@ pub enum X11Color {
 impl X11Color {
     pub fn to_rgb<T, U>(&self) -> T
     where
-        T: RGB<U>,
+        T: RGBColor<U>,
     {
         return match self {
             X11Color::AliceBlue => T::from_rgb_f64(0.94, 0.97, 1.00),

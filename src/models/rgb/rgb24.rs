@@ -1,6 +1,6 @@
 use crate::converter;
 use crate::models::hsv::HSV;
-use crate::models::rgb::RGB;
+use crate::models::rgb::RGBColor;
 use crate::models::Color;
 use crate::number_utils;
 use std::fmt::{Display, Formatter, Result};
@@ -95,7 +95,7 @@ impl RGB24 {
     }
 }
 
-impl RGB<u8> for RGB24 {
+impl RGBColor<u8> for RGB24 {
     const MIN: u8 = u8::MIN;
 
     const MAX: u8 = u8::MAX;
