@@ -6,6 +6,7 @@ edition = "2018"
 description = "Color conversion and more"
 keywords = ["graphics", "color"]
 license = "MIT"
+readme = "README.md"
 repository = "https://github.com/leun4m/colorful"
 
 
