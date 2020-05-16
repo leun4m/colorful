@@ -3,12 +3,13 @@ use crate::models::rgb::RGB;
 use crate::models::Color;
 use crate::number_utils;
 
-/// Representation a HSV color
+/// HSV color - based on *hue, saturation, value*
 ///
 /// Each channel is stored as `f64`
 ///
-/// - **H** in degrees (0.0 - 360.0)
-/// - **S/V** as fraction (0.0 - 1.0)
+/// - `h` in degrees (0.0 - 360.0)
+/// - `s` as fraction (0.0 - 1.0)
+/// - `v` as fraction (0.0 - 1.0)
 #[derive(Debug)]
 pub struct HSV {
     h: f64,
@@ -16,58 +17,58 @@ pub struct HSV {
     v: f64,
 }
 
-/// Used for the precision of equality between to HSV Colors
-pub const EPSILON: f64 = 0.000_000_1;
-
-/// 100% white
-pub const WHITE: HSV = HSV {
-    h: 0.0,
-    s: 0.0,
-    v: 1.0,
-};
-
-/// 100% black
-pub const BLACK: HSV = HSV {
-    h: 0.0,
-    s: 0.0,
-    v: 0.0,
-};
-
-/// 100% red
-pub const RED: HSV = HSV {
-    h: 0.0,
-    s: 1.0,
-    v: 1.0,
-};
-
-/// 100% green
-pub const GREEN: HSV = HSV {
-    h: 120.0,
-    s: 1.0,
-    v: 1.0,
-};
-
-/// 100% blue
-pub const BLUE: HSV = HSV {
-    h: 240.0,
-    s: 1.0,
-    v: 1.0,
-};
-
-/// The minimum for channel **hue**
-pub const H_MIN: f64 = 0.0;
-/// The minimum for channel **saturation**
-pub const S_MIN: f64 = 0.0;
-/// The minimum for channel **value**
-pub const V_MIN: f64 = 0.0;
-/// The maximum for channel **hue**
-pub const H_MAX: f64 = 360.0;
-/// The maximum for channel **saturation**
-pub const S_MAX: f64 = 1.0;
-/// The maximum for channel **value**
-pub const V_MAX: f64 = 1.0;
-
 impl HSV {
+    /// Used for the precision of equality between to HSV Colors
+    pub const EPSILON: f64 = 0.000_000_1;
+
+    /// 100% white
+    pub const WHITE: HSV = HSV {
+        h: 0.0,
+        s: 0.0,
+        v: 1.0,
+    };
+
+    /// 100% black
+    pub const BLACK: HSV = HSV {
+        h: 0.0,
+        s: 0.0,
+        v: 0.0,
+    };
+
+    /// 100% red
+    pub const RED: HSV = HSV {
+        h: 0.0,
+        s: 1.0,
+        v: 1.0,
+    };
+
+    /// 100% green
+    pub const GREEN: HSV = HSV {
+        h: 120.0,
+        s: 1.0,
+        v: 1.0,
+    };
+
+    /// 100% blue
+    pub const BLUE: HSV = HSV {
+        h: 240.0,
+        s: 1.0,
+        v: 1.0,
+    };
+
+    /// The minimum for channel **hue**
+    pub const H_MIN: f64 = 0.0;
+    /// The minimum for channel **saturation**
+    pub const S_MIN: f64 = 0.0;
+    /// The minimum for channel **value**
+    pub const V_MIN: f64 = 0.0;
+    /// The maximum for channel **hue**
+    pub const H_MAX: f64 = 360.0;
+    /// The maximum for channel **saturation**
+    pub const S_MAX: f64 = 1.0;
+    /// The maximum for channel **value**
+    pub const V_MAX: f64 = 1.0;
+
     /// Creates a new `HSVColor`, setting all values to zero
     ///
     /// This is *black*.
@@ -91,9 +92,9 @@ impl HSV {
         );
 
         HSV {
-            h: number_utils::convert_to_range(h, H_MIN, H_MAX),
-            s: number_utils::convert_to_range(s, S_MIN, S_MAX),
-            v: number_utils::convert_to_range(v, V_MIN, V_MAX),
+            h: number_utils::convert_to_range(h, HSV::H_MIN, HSV::H_MAX),
+            s: number_utils::convert_to_range(s, HSV::S_MIN, HSV::S_MAX),
+            v: number_utils::convert_to_range(v, HSV::V_MIN, HSV::V_MAX),
         }
     }
 
@@ -108,9 +109,9 @@ impl HSV {
     ///
     pub fn from_hsv_u8(h: u8, s: u8, v: u8) -> Self {
         HSV::from_hsv(
-            h as f64 / u8::MAX as f64 * H_MAX,
-            s as f64 / u8::MAX as f64 * S_MAX,
-            v as f64 / u8::MAX as f64 * V_MAX,
+            h as f64 / u8::MAX as f64 * HSV::H_MAX,
+            s as f64 / u8::MAX as f64 * HSV::S_MAX,
+            v as f64 / u8::MAX as f64 * HSV::V_MAX,
         )
     }
 
@@ -127,9 +128,9 @@ impl HSV {
     /// - (72.0, 0.2, 0.2) => (51, 51, 51)
     pub fn as_tuple_u8(&self) -> (u8, u8, u8) {
         (
-            (self.h / H_MAX * u8::MAX as f64) as u8,
-            (self.s / S_MAX * u8::MAX as f64) as u8,
-            (self.v / V_MAX * u8::MAX as f64) as u8,
+            (self.h / Self::H_MAX * u8::MAX as f64) as u8,
+            (self.s / Self::S_MAX * u8::MAX as f64) as u8,
+            (self.v / Self::V_MAX * u8::MAX as f64) as u8,
         )
     }
 
@@ -180,11 +181,11 @@ impl From<(f64, f64, f64)> for HSV {
 
 impl Color for HSV {
     fn is_white(&self) -> bool {
-        self == &WHITE
+        self == &HSV::WHITE
     }
 
     fn is_black(&self) -> bool {
-        self == &BLACK
+        self == &HSV::BLACK
     }
 }
 
@@ -194,15 +195,15 @@ impl PartialEq for HSV {
     /// Since this uses f64 it will check against [EPSILON](constant.EPSILON.html)
     fn eq(&self, other: &Self) -> bool {
         // Compare floating points
-        number_utils::approx_equal_f64(self.h, other.h, EPSILON)
-            && number_utils::approx_equal_f64(self.s, other.s, EPSILON)
-            && number_utils::approx_equal_f64(self.v, other.v, EPSILON)
+        number_utils::approx_equal_f64(self.h, other.h, HSV::EPSILON)
+            && number_utils::approx_equal_f64(self.s, other.s, HSV::EPSILON)
+            && number_utils::approx_equal_f64(self.v, other.v, HSV::EPSILON)
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::models::hsv::{BLACK, HSV, H_MAX, H_MIN, S_MAX, S_MIN, V_MAX, V_MIN, WHITE};
+    use crate::models::hsv::HSV;
     use crate::models::Color;
 
     #[test]
@@ -234,21 +235,24 @@ mod tests {
 
     #[test]
     fn as_tuple_u8_works() {
-        assert_eq!((0, 0, 0), HSV::from_hsv(H_MIN, S_MIN, V_MIN).as_tuple_u8());
+        assert_eq!(
+            (0, 0, 0),
+            HSV::from_hsv(HSV::H_MIN, HSV::S_MIN, HSV::V_MIN).as_tuple_u8()
+        );
         assert_eq!(
             (255, 255, 255),
-            HSV::from_hsv(H_MAX, S_MAX, V_MAX).as_tuple_u8()
+            HSV::from_hsv(HSV::H_MAX, HSV::S_MAX, HSV::V_MAX).as_tuple_u8()
         );
         assert_eq!(
             (127, 127, 51),
-            HSV::from_hsv(H_MAX / 2.0, S_MAX / 2.0, V_MAX / 5.0).as_tuple_u8()
+            HSV::from_hsv(HSV::H_MAX / 2.0, HSV::S_MAX / 2.0, HSV::V_MAX / 5.0).as_tuple_u8()
         );
     }
 
     #[test]
     fn white_black() {
-        assert!(WHITE.is_white());
-        assert!(BLACK.is_black());
+        assert!(HSV::WHITE.is_white());
+        assert!(HSV::BLACK.is_black());
     }
 
     #[test]
@@ -266,20 +270,20 @@ mod tests {
     #[test]
     fn from_hsv_value_transform() {
         assert_eq!(
-            HSV::from_hsv(H_MIN, S_MIN, V_MIN),
-            HSV::from_hsv(H_MIN - 1.0, S_MIN - 1.0, V_MIN - 1.0)
+            HSV::from_hsv(HSV::H_MIN, HSV::S_MIN, HSV::V_MIN),
+            HSV::from_hsv(HSV::H_MIN - 1.0, HSV::S_MIN - 1.0, HSV::V_MIN - 1.0)
         );
         assert_eq!(
-            HSV::from_hsv(H_MAX, S_MAX, V_MAX),
-            HSV::from_hsv(H_MAX + 1.0, S_MAX + 1.0, V_MAX + 1.0)
+            HSV::from_hsv(HSV::H_MAX, HSV::S_MAX, HSV::V_MAX),
+            HSV::from_hsv(HSV::H_MAX + 1.0, HSV::S_MAX + 1.0, HSV::V_MAX + 1.0)
         );
 
         assert_eq!(
-            HSV::from_hsv(H_MIN, S_MIN, V_MIN),
+            HSV::from_hsv(HSV::H_MIN, HSV::S_MIN, HSV::V_MIN),
             HSV::from_hsv(f64::NEG_INFINITY, f64::NEG_INFINITY, f64::NEG_INFINITY)
         );
         assert_eq!(
-            HSV::from_hsv(H_MAX, S_MAX, V_MAX),
+            HSV::from_hsv(HSV::H_MAX, HSV::S_MAX, HSV::V_MAX),
             HSV::from_hsv(f64::INFINITY, f64::INFINITY, f64::INFINITY)
         );
     }

@@ -84,11 +84,10 @@ pub fn rgb48_to_rgb24(rgb: &RGB48) -> RGB24 {
 #[cfg(test)]
 mod tests {
     use crate::converter::{hsv_to_rgb, rgb24_to_rgb48, rgb48_to_rgb24, rgb_to_hsv};
-    use crate::models::hsv;
     use crate::models::hsv::HSV;
     use crate::models::rgb::rgb24::RGB24;
     use crate::models::rgb::rgb48::RGB48;
-    use crate::models::rgb::{rgb24, rgb48, RGB};
+    use crate::models::rgb::RGB;
     use crate::presets::X11Color;
     use std::fmt::Debug;
     use strum::IntoEnumIterator;
@@ -96,9 +95,9 @@ mod tests {
     fn assert_approx_equal_hsv(a: &HSV, b: &HSV) {
         const EPSILON: f64 = 0.02;
 
-        if (a.h() - b.h()).abs() / hsv::H_MAX >= EPSILON
-            || (a.s() - b.s()).abs() / hsv::S_MAX >= EPSILON
-            || (a.v() - b.v()).abs() / hsv::V_MAX >= EPSILON
+        if (a.h() - b.h()).abs() / HSV::H_MAX >= EPSILON
+            || (a.s() - b.s()).abs() / HSV::S_MAX >= EPSILON
+            || (a.v() - b.v()).abs() / HSV::V_MAX >= EPSILON
         {
             panic!("{:?} !~ {:?}", a, b);
         }
@@ -119,11 +118,11 @@ mod tests {
 
     #[test]
     fn rgb_to_hsv_rgb24() {
-        assert_eq!(hsv::WHITE, rgb_to_hsv(&rgb24::WHITE));
-        assert_eq!(hsv::BLACK, rgb_to_hsv(&rgb24::BLACK));
-        assert_eq!(hsv::RED, rgb_to_hsv(&rgb24::RED));
-        assert_eq!(hsv::GREEN, rgb_to_hsv(&rgb24::GREEN));
-        assert_eq!(hsv::BLUE, rgb_to_hsv(&rgb24::BLUE));
+        assert_eq!(HSV::WHITE, rgb_to_hsv(&RGB24::WHITE));
+        assert_eq!(HSV::BLACK, rgb_to_hsv(&RGB24::BLACK));
+        assert_eq!(HSV::RED, rgb_to_hsv(&RGB24::RED));
+        assert_eq!(HSV::GREEN, rgb_to_hsv(&RGB24::GREEN));
+        assert_eq!(HSV::BLUE, rgb_to_hsv(&RGB24::BLUE));
     }
 
     #[test]
@@ -142,20 +141,20 @@ mod tests {
 
     #[test]
     fn rgb_to_hsv_rgb48() {
-        assert_eq!(hsv::WHITE, rgb_to_hsv(&rgb48::WHITE));
-        assert_eq!(hsv::BLACK, rgb_to_hsv(&rgb48::BLACK));
-        assert_eq!(hsv::RED, rgb_to_hsv(&rgb48::RED));
-        assert_eq!(hsv::GREEN, rgb_to_hsv(&rgb48::GREEN));
-        assert_eq!(hsv::BLUE, rgb_to_hsv(&rgb48::BLUE));
+        assert_eq!(HSV::WHITE, rgb_to_hsv(&RGB48::WHITE));
+        assert_eq!(HSV::BLACK, rgb_to_hsv(&RGB48::BLACK));
+        assert_eq!(HSV::RED, rgb_to_hsv(&RGB48::RED));
+        assert_eq!(HSV::GREEN, rgb_to_hsv(&RGB48::GREEN));
+        assert_eq!(HSV::BLUE, rgb_to_hsv(&RGB48::BLUE));
     }
 
     #[test]
     fn hsv_to_rgb_rgb24() {
-        assert_eq!(rgb24::WHITE, hsv_to_rgb(&hsv::WHITE));
-        assert_eq!(rgb24::BLACK, hsv_to_rgb(&hsv::BLACK));
-        assert_eq!(rgb24::RED, hsv_to_rgb(&hsv::RED));
-        assert_eq!(rgb24::GREEN, hsv_to_rgb(&hsv::GREEN));
-        assert_eq!(rgb24::BLUE, hsv_to_rgb(&hsv::BLUE));
+        assert_eq!(RGB24::WHITE, hsv_to_rgb(&HSV::WHITE));
+        assert_eq!(RGB24::BLACK, hsv_to_rgb(&HSV::BLACK));
+        assert_eq!(RGB24::RED, hsv_to_rgb(&HSV::RED));
+        assert_eq!(RGB24::GREEN, hsv_to_rgb(&HSV::GREEN));
+        assert_eq!(RGB24::BLUE, hsv_to_rgb(&HSV::BLUE));
 
         assert_eq!(
             RGB24::from((255, 0, 128)),
@@ -165,28 +164,28 @@ mod tests {
 
     #[test]
     fn hsv_to_rgb_rgb48() {
-        assert_eq!(rgb48::WHITE, hsv_to_rgb(&hsv::WHITE));
-        assert_eq!(rgb48::BLACK, hsv_to_rgb(&hsv::BLACK));
-        assert_eq!(rgb48::RED, hsv_to_rgb(&hsv::RED));
-        assert_eq!(rgb48::GREEN, hsv_to_rgb(&hsv::GREEN));
-        assert_eq!(rgb48::BLUE, hsv_to_rgb(&hsv::BLUE));
+        assert_eq!(RGB48::WHITE, hsv_to_rgb(&HSV::WHITE));
+        assert_eq!(RGB48::BLACK, hsv_to_rgb(&HSV::BLACK));
+        assert_eq!(RGB48::RED, hsv_to_rgb(&HSV::RED));
+        assert_eq!(RGB48::GREEN, hsv_to_rgb(&HSV::GREEN));
+        assert_eq!(RGB48::BLUE, hsv_to_rgb(&HSV::BLUE));
     }
 
     #[test]
     fn rgb24_to_rgb48_() {
-        assert_eq!(rgb48::WHITE, rgb24_to_rgb48(&rgb24::WHITE));
-        assert_eq!(rgb48::BLACK, rgb24_to_rgb48(&rgb24::BLACK));
-        assert_eq!(rgb48::RED, rgb24_to_rgb48(&rgb24::RED));
-        assert_eq!(rgb48::GREEN, rgb24_to_rgb48(&rgb24::GREEN));
-        assert_eq!(rgb48::BLUE, rgb24_to_rgb48(&rgb24::BLUE));
+        assert_eq!(RGB48::WHITE, rgb24_to_rgb48(&RGB24::WHITE));
+        assert_eq!(RGB48::BLACK, rgb24_to_rgb48(&RGB24::BLACK));
+        assert_eq!(RGB48::RED, rgb24_to_rgb48(&RGB24::RED));
+        assert_eq!(RGB48::GREEN, rgb24_to_rgb48(&RGB24::GREEN));
+        assert_eq!(RGB48::BLUE, rgb24_to_rgb48(&RGB24::BLUE));
     }
 
     #[test]
     fn rgb48_to_rgb24_() {
-        assert_eq!(rgb24::WHITE, rgb48_to_rgb24(&rgb48::WHITE));
-        assert_eq!(rgb24::BLACK, rgb48_to_rgb24(&rgb48::BLACK));
-        assert_eq!(rgb24::RED, rgb48_to_rgb24(&rgb48::RED));
-        assert_eq!(rgb24::GREEN, rgb48_to_rgb24(&rgb48::GREEN));
-        assert_eq!(rgb24::BLUE, rgb48_to_rgb24(&rgb48::BLUE));
+        assert_eq!(RGB24::WHITE, rgb48_to_rgb24(&RGB48::WHITE));
+        assert_eq!(RGB24::BLACK, rgb48_to_rgb24(&RGB48::BLACK));
+        assert_eq!(RGB24::RED, rgb48_to_rgb24(&RGB48::RED));
+        assert_eq!(RGB24::GREEN, rgb48_to_rgb24(&RGB48::GREEN));
+        assert_eq!(RGB24::BLUE, rgb48_to_rgb24(&RGB48::BLUE));
     }
 }

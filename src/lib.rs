@@ -14,13 +14,19 @@ extern crate strum;
 extern crate strum_macros;
 
 /// Contains different color models
-pub mod models;
+mod models;
 
-/// Contains the calculations for conversion between color models
-pub mod converter;
+pub use models::hsv::HSV;
+pub use models::rgb::rgb24::RGB24;
+pub use models::rgb::rgb48::RGB48;
+pub use models::rgb::RGB;
+pub use models::Color;
 
 /// Contains a set of common predefined colors
 pub mod presets;
+
+/// Contains the calculations for conversion between color models
+mod converter;
 
 /// Contains various util methods for the work with numbers
 mod number_utils;

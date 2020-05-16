@@ -5,7 +5,7 @@ pub mod rgb24;
 /// The RGB color model (48-bit)
 pub mod rgb48;
 
-/// Representation of an RGB Color
+/// RGB color - based on *red, green, blue*
 ///
 /// Suitable for different color depths
 ///
@@ -17,6 +17,21 @@ pub trait RGB<T> {
 
     /// The maximal value for a channel (100%)
     const MAX: T;
+
+    /// 100% white
+    const WHITE: Self;
+
+    /// 100% black
+    const BLACK: Self;
+
+    /// 100% red
+    const RED: Self;
+
+    /// 100% green`
+    const GREEN: Self;
+
+    /// 100% blue
+    const BLUE: Self;
 
     /// Creates a new RGB color, setting all values to zero.
     ///

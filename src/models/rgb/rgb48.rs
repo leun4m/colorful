@@ -4,11 +4,9 @@ use crate::models::Color;
 use crate::{converter, number_utils};
 use std::fmt::{Display, Formatter, Result};
 
-/// Representation of a color model stored as RGB channels.
+/// 48-bit RGB color
 ///
-/// This is the most widespread variant of RGB called
-/// [True color (24-bit)](https://en.wikipedia.org/wiki/Color_depth#True_color_(24-bit))
-/// meaning every color channel consists of `8-bit` (0-255).
+/// This is a *deep color*, meaning every color channel consists of `16-bit` (0 - 65535).
 ///
 #[derive(Debug)]
 pub struct RGB48 {
@@ -17,56 +15,51 @@ pub struct RGB48 {
     b: u16,
 }
 
-/// 100% white as `RGB48`
-pub const WHITE: RGB48 = RGB48 {
-    r: u16::MAX,
-    g: u16::MAX,
-    b: u16::MAX,
-};
-
-/// 100% black as `RGB48`
-pub const BLACK: RGB48 = RGB48 {
-    r: u16::MIN,
-    g: u16::MIN,
-    b: u16::MIN,
-};
-
-/// 100% red as `RGB48`
-pub const RED: RGB48 = RGB48 {
-    r: u16::MAX,
-    g: u16::MIN,
-    b: u16::MIN,
-};
-
-/// 100% green as `RGB48`
-pub const GREEN: RGB48 = RGB48 {
-    r: u16::MIN,
-    g: u16::MAX,
-    b: u16::MIN,
-};
-
-/// 100% blue as `RGB48`
-pub const BLUE: RGB48 = RGB48 {
-    r: u16::MIN,
-    g: u16::MIN,
-    b: u16::MAX,
-};
-
 impl RGB<u16> for RGB48 {
     const MIN: u16 = u16::MIN;
 
     const MAX: u16 = u16::MAX;
 
+    const WHITE: Self = Self {
+        r: u16::MAX,
+        g: u16::MAX,
+        b: u16::MAX,
+    };
+
+    const BLACK: Self = Self {
+        r: u16::MIN,
+        g: u16::MIN,
+        b: u16::MIN,
+    };
+
+    const RED: Self = Self {
+        r: u16::MAX,
+        g: u16::MIN,
+        b: u16::MIN,
+    };
+
+    const GREEN: Self = Self {
+        r: u16::MIN,
+        g: u16::MAX,
+        b: u16::MIN,
+    };
+
+    const BLUE: Self = Self {
+        r: u16::MIN,
+        g: u16::MIN,
+        b: u16::MAX,
+    };
+
     fn new() -> Self {
-        RGB48::from_rgb(0, 0, 0)
+        Self::from_rgb(0, 0, 0)
     }
 
     fn from_rgb(r: u16, g: u16, b: u16) -> Self {
-        RGB48 { r, g, b }
+        Self { r, g, b }
     }
 
     fn from_rgb_f64(r: f64, g: f64, b: f64) -> Self {
-        RGB48::from_rgb(
+        Self::from_rgb(
             number_utils::to_u16_repr(r),
             number_utils::to_u16_repr(g),
             number_utils::to_u16_repr(b),
@@ -118,7 +111,7 @@ impl From<(u16, u16, u16)> for RGB48 {
     ///
     /// Works similar to [from_rgb](#method.from_rgb)
     fn from(rgb: (u16, u16, u16)) -> Self {
-        RGB48::from_rgb(rgb.0, rgb.1, rgb.2)
+        Self::from_rgb(rgb.0, rgb.1, rgb.2)
     }
 }
 
@@ -127,7 +120,7 @@ impl From<(f64, f64, f64)> for RGB48 {
     ///
     /// Works similar to [from_rgb_f64](#method.from_rgb_f64)
     fn from(rgb: (f64, f64, f64)) -> Self {
-        RGB48::from_rgb_f64(rgb.0, rgb.1, rgb.2)
+        Self::from_rgb_f64(rgb.0, rgb.1, rgb.2)
     }
 }
 
@@ -145,11 +138,11 @@ impl PartialEq for RGB48 {
 
 impl Color for RGB48 {
     fn is_white(&self) -> bool {
-        self == &WHITE
+        self == &Self::WHITE
     }
 
     fn is_black(&self) -> bool {
-        self == &BLACK
+        self == &Self::BLACK
     }
 }
 
@@ -159,7 +152,7 @@ mod tests {
 
     #[test]
     fn new_() {
-        assert_eq!(BLACK, RGB48::new());
+        assert_eq!(RGB48::BLACK, RGB48::new());
     }
 
     #[test]
