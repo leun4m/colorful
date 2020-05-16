@@ -101,6 +101,7 @@ impl RGB<u16> for RGB48 {
             self.b as f64 / RGB48::MAX as f64,
         )
     }
+
     fn to_hsv(&self) -> HSV {
         converter::rgb_to_hsv(self)
     }
