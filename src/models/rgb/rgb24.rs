@@ -35,7 +35,7 @@ impl RGB24 {
     pub fn from_hex(hex: &str) -> Self {
         let length = hex.chars().count();
         let value =
-            u32::from_str_radix(hex, 16).expect(format!("HEX is invalid: {}", hex).as_str());
+            u32::from_str_radix(hex, 16).unwrap_or_else(|_| panic!("HEX is invalid: {}", hex));
 
         if length == 6 {
             RGB24::from_int(value, 256)
@@ -61,9 +61,9 @@ impl RGB24 {
     /// **Warning:** This is a *lossy* compression.
     /// It will round to the nearest value
     pub fn to_hex_short(&self) -> String {
-        let r = (self.r as f64 / RGB24::MAX as f64 * 15 as f64).round() as u32;
-        let g = (self.g as f64 / RGB24::MAX as f64 * 15 as f64).round() as u32;
-        let b = (self.b as f64 / RGB24::MAX as f64 * 15 as f64).round() as u32;
+        let r = (self.r as f64 / RGB24::MAX as f64 * 15_f64).round() as u32;
+        let g = (self.g as f64 / RGB24::MAX as f64 * 15_f64).round() as u32;
+        let b = (self.b as f64 / RGB24::MAX as f64 * 15_f64).round() as u32;
 
         let sum: u32 = (r << 8) + (g << 4) + b;
         format!("{:03x}", sum)
@@ -71,7 +71,7 @@ impl RGB24 {
 
     /// Converts [`RGB24`] -> [`RGB48`]
     pub fn to_rgb48(&self) -> RGB48 {
-        converter::rgb24_to_rgb48(&self)
+        converter::rgb24_to_rgb48(self)
     }
 
     /// Converts an integer to the corresponding RGB Color

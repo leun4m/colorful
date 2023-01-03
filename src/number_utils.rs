@@ -83,13 +83,7 @@ pub fn approx_equal_f64(a: f64, b: f64, epsilon: f64) -> bool {
 /// - value > max => max
 /// - else => value
 pub fn convert_to_range(a: f64, min: f64, max: f64) -> f64 {
-    if a <= min {
-        min
-    } else if a >= max {
-        max
-    } else {
-        a
-    }
+    a.clamp(min, max)
 }
 
 #[cfg(test)]

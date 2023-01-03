@@ -22,7 +22,7 @@ impl RGB48 {
     /// # Careful
     /// This is a lossy conversion
     pub fn to_rgb48(&self) -> RGB24 {
-        converter::rgb48_to_rgb24(&self)
+        converter::rgb48_to_rgb24(self)
     }
 }
 

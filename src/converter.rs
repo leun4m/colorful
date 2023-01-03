@@ -75,9 +75,9 @@ pub fn rgb24_to_rgb48(rgb: &RGB24) -> RGB48 {
 pub fn rgb48_to_rgb24(rgb: &RGB48) -> RGB24 {
     const DIVIDER: u16 = RGB48::MAX / RGB24::MAX as u16;
     RGB24::from_rgb(
-        (rgb.r() as u16 / DIVIDER) as u8,
-        (rgb.g() as u16 / DIVIDER) as u8,
-        (rgb.b() as u16 / DIVIDER) as u8,
+        (rgb.r() / DIVIDER) as u8,
+        (rgb.g() / DIVIDER) as u8,
+        (rgb.b() / DIVIDER) as u8,
     )
 }
 
@@ -103,7 +103,7 @@ mod tests {
         }
     }
 
-    fn assert_approx_equal_rgb<T>(a: &T, b: &T) -> ()
+    fn assert_approx_equal_rgb<T>(a: &T, b: &T)
     where
         T: RGBColor<u8> + Debug,
     {

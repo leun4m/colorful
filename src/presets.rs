@@ -160,7 +160,7 @@ impl X11Color {
     where
         T: RGBColor<U>,
     {
-        return match self {
+        match self {
             X11Color::AliceBlue => T::from_rgb_f64(0.94, 0.97, 1.00),
             X11Color::AntiqueWhite => T::from_rgb_f64(0.98, 0.92, 0.84),
             X11Color::Aqua => T::from_rgb_f64(0.00, 1.00, 1.00),
@@ -306,11 +306,11 @@ impl X11Color {
             X11Color::WhiteSmoke => T::from_rgb_f64(0.96, 0.96, 0.96),
             X11Color::Yellow => T::from_rgb_f64(1.00, 1.00, 0.00),
             X11Color::YellowGreen => T::from_rgb_f64(0.60, 0.80, 0.20),
-        };
+        }
     }
 
     pub fn to_hsv(&self) -> HSV {
-        return match self {
+        match self {
             X11Color::AliceBlue => HSV::from_hsv(208.00, 0.06, 1.00),
             X11Color::AntiqueWhite => HSV::from_hsv(34.00, 0.14, 0.98),
             X11Color::Aqua => HSV::from_hsv(180.00, 1.00, 1.00),
@@ -456,6 +456,6 @@ impl X11Color {
             X11Color::WhiteSmoke => HSV::from_hsv(0.00, 0.00, 0.96),
             X11Color::Yellow => HSV::from_hsv(60.00, 1.00, 1.00),
             X11Color::YellowGreen => HSV::from_hsv(80.00, 0.76, 0.80),
-        };
+        }
     }
 }
