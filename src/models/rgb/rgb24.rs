@@ -10,7 +10,7 @@ use std::fmt::{Display, Formatter, Result};
 /// This is the most widespread variant of RGB called
 /// [True color (24-bit)](https://en.wikipedia.org/wiki/Color_depth#True_color_(24-bit))
 /// meaning every color channel consists of `8-bit` (0-255).
-#[derive(Copy, Clone, Debug, Eq, Hash)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct RGB24 {
     r: u8,
@@ -205,12 +205,6 @@ impl From<(f64, f64, f64)> for RGB24 {
 impl Display for RGB24 {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         write!(f, "(R:{}, G:{}, B:{})", self.r, self.g, self.b)
-    }
-}
-
-impl PartialEq for RGB24 {
-    fn eq(&self, other: &Self) -> bool {
-        self.r == other.r && self.g == other.g && self.b == other.b
     }
 }
 
